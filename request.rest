@@ -1,0 +1,27 @@
+###
+
+GET http://localhost:3000/index
+
+
+###
+
+GET http://localhost:3000/post
+
+###
+
+GET http://localhost:3000/post?sender=123456
+
+###
+
+GET http://localhost:3000/post/635e839d872a9995f8cd61ce
+
+###
+
+
+POST http://localhost:3000/post
+Content-Type: application/json
+
+{
+    "message": "this is a new message",
+    "sender": "123456"
+}
