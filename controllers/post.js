@@ -27,7 +27,7 @@ const addNewPost = async (req, res, next) => {
     try {
         newPost = await post.save()
         console.log('save post in db')
-        res.status(200).send({newPost})
+        res.status(200).send(newPost)
     } catch (error) {
         console.log("fail to save post in db")
         res.status(400).send({ "error": error.message})
