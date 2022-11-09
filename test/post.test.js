@@ -5,7 +5,7 @@ const Post = require('../models/post_model')
 
 const newPostMessage = 'this is a new post message'
 const newPostSender = '999000'
-let nrePostId = null
+let newPostId = '' //defualt value
 beforeAll(async () =>{
     await Post.remove()
 })
@@ -25,6 +25,8 @@ describe('Posts Tests', ()=>{
         expect(response.statusCode).toEqual(200)
         expect(response.body.message).toEqual(newPostMessage)
         expect(response.body.sender).toEqual(newPostSender)
+        newPostId = response.body._id
+        console.log(newPostId)
     })
     test('get all post', async () =>{
         const response = await request(app).get('/post')
@@ -33,16 +35,14 @@ describe('Posts Tests', ()=>{
         expect(response.body[0].sender).toEqual(newPostSender)
 
     })
-    //need to define it somewhere (look at the record of the class)
-    // newPostId = response.body.id
-    // test('get post by Id', async () =>{
-    //     const response = await request(app).get('/post/' + newPostId).send({
-    //         'message': newPostMessage,
-    //         'sender':newPostSender
-    //     })
-    //     expect(response.statusCode).toEqual(200)
-    //     expect(response.body.message).toEqual(newPostMessage)
-    //     expect(response.body.sender).toEqual(newPostSender)
-    // })
+    test('get post by Id', async () =>{
+        const response = await request(app).get('/post/' + newPostId).send({
+            'message': newPostMessage,
+            'sender':newPostSender
+        })
+        expect(response.statusCode).toEqual(200)
+        expect(response.body.message).toEqual(newPostMessage)
+        expect(response.body.sender).toEqual(newPostSender)
+    })
 
 })
