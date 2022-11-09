@@ -57,4 +57,29 @@ const getPostById = async (req, res, next) => {
 
 }
 
-module.exports = {getAllPosts, addNewPost, getPostById}
+const putPostById = async (req, res, next) => {
+    const id = req.params.id
+    console.log('putPostById: ', id)
+    if ( id == null | id == undefined ) {
+        res.status(400).send({
+            'status': 'fail',
+            'message': 'id is null or undefined',
+        })
+    }
+    try {
+        const posts = await Post.findByIdAndUpdate({'_id':id}, req.body).then(() =>{
+            Post.findOne({'_id':id}).then((posts) =>{
+                res.status(200).send(posts)
+            })
+        })
+
+    } catch (error) {
+        res.status(400).send({
+            'status': 'fail',
+            'message': error.message
+        })
+    }
+
+}
+
+module.exports = {getAllPosts, addNewPost, getPostById, putPostById}

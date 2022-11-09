@@ -43,6 +43,8 @@ describe('Posts Tests', ()=>{
         expect(response.statusCode).toEqual(200)
         expect(response.body.message).toEqual(newPostMessage)
         expect(response.body.sender).toEqual(newPostSender)
+        expect(response.body._id).toEqual(newPostId)
+
     })
 
     test('get post by sender', async () =>{
@@ -53,6 +55,24 @@ describe('Posts Tests', ()=>{
         expect(response.statusCode).toEqual(200)
         expect(response.body[0].message).toEqual(newPostMessage)
         expect(response.body[0].sender).toEqual(newPostSender)
+        expect(response.body[0]._id).toEqual(newPostId)
+
+    })
+
+    test('put post by id', async () =>{
+        const msg = 'message from put request'
+        const sender = '111000'
+        console.log(newPostId)
+        const response = await request(app).put('/post/' + newPostId).send({
+            'message': msg,
+            'sender':sender
+        })
+        expect(response.statusCode).toEqual(200)
+        expect(response.body.message).toEqual(msg)
+        expect(response.body.sender).toEqual(sender)
+        expect(response.body._id).toEqual(newPostId)
+        expect(response.body.message).not.toEqual(newPostMessage)
+        expect(response.body.sender).not.toEqual(newPostSender)
     })
 
 })
