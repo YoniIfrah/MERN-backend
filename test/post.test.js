@@ -73,6 +73,15 @@ describe('Posts Tests', ()=>{
         expect(response.body._id).toEqual(newPostId)
         expect(response.body.message).not.toEqual(newPostMessage)
         expect(response.body.sender).not.toEqual(newPostSender)
+        
+        //trying with invalid id
+        const response2 = await request(app).put('/post/' + '0').send({
+            'message': 'invalid',
+            'sender':'invalid'
+        })
+        expect(response2.statusCode).toEqual(400)
     })
+
+
 
 })
