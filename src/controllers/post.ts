@@ -1,6 +1,7 @@
 import Post from '../models/post_model'
+import { Request, Response } from 'express'
 
-const getAllPosts = async (req, res) => {
+const getAllPosts = async (req:Request, res:Response) => {
     try {
         let posts = {}
         if (req.query.sender == null){
@@ -16,7 +17,7 @@ const getAllPosts = async (req, res) => {
     }    
 }
 
-const addNewPost = async (req, res) => {
+const addNewPost = async (req:Request, res:Response) => {
     console.log("this is the request body: ", req.body);
 
     const post = new Post({
@@ -35,7 +36,7 @@ const addNewPost = async (req, res) => {
 
 } 
 
-const getPostById = async (req, res) => {
+const getPostById = async (req:Request, res:Response) => {
     const id = req.params.id
     console.log('getPostById: ', id)
     if ( id == null || id == undefined ) {
@@ -57,7 +58,7 @@ const getPostById = async (req, res) => {
 
 }
 
-const putPostById = async (req, res) => {
+const putPostById = async (req:Request, res:Response) => {
     const id = req.params.id
     console.log('putPostById: ', id)
     if ( id == null || id == undefined ) {
