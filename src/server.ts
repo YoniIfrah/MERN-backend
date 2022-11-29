@@ -30,4 +30,7 @@ app.use('/public',express.static('public'))
 import postRouter from './routes/post_route'
 app.use('/post',postRouter);
 
+import authRouter from './routes/auth_route'
+app.use('/auth',authRouter);
+
 export = app
