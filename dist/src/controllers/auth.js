@@ -14,11 +14,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 const user_model_1 = __importDefault(require("../models/user_model"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+/**
+ * Other methods
+ */
 function sendError(res, error) {
     res.status(400).send({
         'err': error,
     });
 }
+function getTokenFromReq(req) {
+    const authHeader = req.headers['authorization'];
+    if (authHeader == null)
+        return null;
+    return authHeader.split(' ')[1];
+}
+function generateTokens(userId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const accessToken = yield jsonwebtoken_1.default.sign({ 'id': userId }, process.env.ACCESS_TOKEN_SECRET, { 'expiresIn': process.env.JWT_TOKEN_EXPIRATION });
+        const refreshToken = yield jsonwebtoken_1.default.sign({ 'id': userId }, process.env.REFRESH_TOKEN_SECRET);
+        return { 'accessToken': accessToken, 'refreshToken': refreshToken };
+    });
+}
+// end of other methods
 /**
  **explain for registration**
  1.Check if the user is valid
@@ -71,7 +88,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return sendError(res, 'please provide valid email/password');
     }
     try {
-        const user = yield user_model_1.default.findOne({ 'email': email }); //bug
+        const user = yield user_model_1.default.findOne({ 'email': email });
         if (user == null) {
             return sendError(res, 'incorrect user or password');
         }
@@ -80,13 +97,47 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return sendError(res, 'incorrect user or password');
         }
         const accessToken = yield jsonwebtoken_1.default.sign({ '_id': user._id }, process.env.ACCESS_TOKEN_SECRET, { 'expiresIn': process.env.JWT_TOKEN_EXPIRATION });
+        const refreshToken = yield jsonwebtoken_1.default.sign({ '_id': user._id }, process.env.REFRESH_TOKEN_SECRECT);
+        if (user.refresh_tokens == null) {
+            user.refresh_tokens = [refreshToken];
+        }
+        else {
+            user.refresh_tokens.push(refreshToken);
+        }
+        yield user.save();
         // in the end of the block
-        res.status(200).send({ 'accessToken': accessToken });
+        res.status(200).send({ 'accessToken': accessToken, 'refreshToken': refreshToken });
     }
     catch (err) {
         console.log('Error:', err);
         sendError(res, 'fail checking user');
     }
+});
+const refresh = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const refreshToken = getTokenFromReq(req);
+    if (refreshToken == null)
+        return sendError(res, 'authentication missing');
+    try {
+        const user = yield jsonwebtoken_1.default.verify(refreshToken, process.env.REFRESH_TOKEN_SECRECT);
+        const userObj = yield user_model_1.default.findById(user);
+        if (!userObj)
+            return sendError(res, 'fail validating token');
+        if (!userObj.refresh_tokens.includes(refreshToken)) {
+            userObj.refresh_tokens = [];
+            yield userObj.save();
+            return sendError(res, 'fail validating token');
+        }
+        const tokens = yield generateTokens(userObj._id.toString());
+        userObj.refresh_tokens[userObj.refresh_tokens.indexOf(refreshToken)] = tokens.refreshToken;
+        console.log("refresh token: " + refreshToken);
+        console.log("with token: " + tokens.refreshToken);
+        yield userObj.save();
+        return res.status(200).send(tokens);
+    }
+    catch (err) {
+        return sendError(res, 'validation failed token');
+    }
+    res.status(400).send({ 'error': 'not implemented' });
 });
 const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.status(400).send({
@@ -114,5 +165,5 @@ const authenticaticatedMiddleware = (req, res, next) => __awaiter(void 0, void 0
         return sendError(res, 'validation failed token');
     }
 });
-module.exports = { login, register, logout, authenticaticatedMiddleware };
+module.exports = { login, refresh, register, logout, authenticaticatedMiddleware };
 //# sourceMappingURL=auth.js.map

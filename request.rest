@@ -19,6 +19,7 @@ GET http://localhost:3000/post/635e839d872a9995f8cd61ce
 
 
 POST http://localhost:3000/post
+Authorization: jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Mzg2MTI0OTk2NDBlMmEyYjUzZjZhMzMiLCJpYXQiOjE2Njk3MzA4OTMsImV4cCI6MTY2OTczNDQ5M30.RWdfeDd2G39FUTOH-T83l9SAFjmj1lcFWAaWBRSaASg
 Content-Type: application/json
 
 {
