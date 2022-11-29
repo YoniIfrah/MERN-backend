@@ -68,19 +68,30 @@ describe('Auth Tests', ()=>{
         expect(response.statusCode).not.toEqual(200)
     })
 
+    //test expired token
     jest.setTimeout(30000)
-    test('test expired token', async () =>{
-        await new Promise(r => setTimeout(r, 10000))
+    test("test expiered token",async ()=>{
+        await new Promise(r => setTimeout(r,10000))
         const response = await request(app).get('/post').set('Authorization', 'JWT ' + accessToken);
         expect(response.statusCode).not.toEqual(200)
     })
-    test('Logout test', async () =>{
-        const response = await request(app).get('/auth/logout')
-        .set('Authorization', 'JWT ' + refreshToken)
+
+    test("test refresh token",async ()=>{
+        let response = await request(app).get('/auth/refresh').set('Authorization', 'JWT ' + refreshToken);
+        expect(response.statusCode).toEqual(200)
+
+        accessToken = response.body.accessToken
+        expect(accessToken).not.toBeNull()
+        refreshToken = response.body.refreshToken
+        expect(refreshToken).not.toBeNull()
+        
+        response = await request(app).get('/post').set('Authorization', 'JWT ' + accessToken);
         expect(response.statusCode).toEqual(200)
 
     })
+    test("Logout test",async ()=>{
+        const response = await request(app).get('/auth/logout').set('Authorization', 'JWT ' + refreshToken)
+        expect(response.statusCode).toEqual(200)
+    })
 
-    //test expired token
-   
 })

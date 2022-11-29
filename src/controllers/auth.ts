@@ -16,7 +16,7 @@ function getTokenFromReq(req:Request): string {
     if (authHeader == null) return null
     return authHeader.split(' ')[1]
 }
-async function generateTokens(userId:string){
+async function generateTokens(userId:string): Promise<Object>{
     const accessToken = await jwt.sign(
         {'id': userId},
         process.env.ACCESS_TOKEN_SECRET,
@@ -134,8 +134,8 @@ const refresh = async (req:Request, res:Response) => {
             await userObj.save()
             return sendError(res, 'fail validating token')
         }
-        const tokens = await generateTokens(userObj._id.toString())
-        userObj.refresh_tokens[userObj.refresh_tokens.indexOf(refreshToken)] = tokens.refreshToken
+        const tokens = await generateTokens(userObj._id.toString())//bug
+        userObj.refresh_tokens[userObj.refresh_tokens.indexOf(refreshToken)] = tokens['refreshToken']
 
         await userObj.save()
 
@@ -157,7 +157,7 @@ const logout = async (req:Request, res:Response) => {
     if(!refreshToken)  return sendError(res, 'invalid token')
     try{
         const user = await jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRECT)
-        const userObj = await User.findById(user['_id'])// NEED TO BE user._id
+        const userObj = await User.findById(user['_id'])// maybe NEED TO BE user._id
         if (!userObj)    return sendError(res, 'fail validating token')  
         
         if (!userObj.refresh_tokens.includes(refreshToken)){
