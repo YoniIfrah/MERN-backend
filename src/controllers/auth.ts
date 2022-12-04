@@ -24,7 +24,7 @@ async function generateTokens(userId:string): Promise<Object>{
     )
     const refreshToken = await jwt.sign(
         {'id': userId},
-        process.env.REFRESH_TOKEN_SECRET
+        process.env.REFRESH_TOKEN_SECRET,
     )
 
     return {'accessToken':accessToken, 'refreshToken':refreshToken}
@@ -134,7 +134,13 @@ const refresh = async (req:Request, res:Response) => {
             await userObj.save()
             return sendError(res, 'fail validating token')
         }
-        const tokens = await generateTokens(userObj._id.toString())//bug
+        const accessToken = await jwt.sign(
+            {'_id': user['id']},
+            process.env.ACCESS_TOKEN_SECRET,
+            { 'expiresIn' :process.env.JWT_TOKEN_EXPIRATION}
+        )
+        // const tokens = await generateTokens(userObj._id.toString())//bug since we get refreshToken from getTokenFrom Req
+        const tokens = {'accessToken':accessToken, 'refreshToken':refreshToken}
         userObj.refresh_tokens[userObj.refresh_tokens.indexOf(refreshToken)] = tokens['refreshToken']
 
         await userObj.save()
