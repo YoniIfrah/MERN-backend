@@ -10,16 +10,15 @@ var accessToken: string = ''
 var refreshToken: string = ''
 
 
-beforeAll(async () =>{
+beforeAll(async ()=>{
     await Post.remove()
     await User.remove()
 })
 
-afterAll(async () =>{
+afterAll(async ()=>{
     await Post.remove()
     await User.remove()
     mongoose.connection.close()
-
 })
 
 describe('Auth Tests', ()=>{
@@ -70,7 +69,7 @@ describe('Auth Tests', ()=>{
 
     //test expired token
     jest.setTimeout(30000)
-    test("test expiered token",async ()=>{
+    test("test expired token",async ()=>{
         await new Promise(r => setTimeout(r,10000))
         const response = await request(app).get('/post').set('Authorization', 'JWT ' + accessToken);
         expect(response.statusCode).not.toEqual(200)
@@ -89,6 +88,7 @@ describe('Auth Tests', ()=>{
         expect(response.statusCode).toEqual(200)
 
     })
+
     test("Logout test",async ()=>{
         const response = await request(app).get('/auth/logout').set('Authorization', 'JWT ' + refreshToken)
         expect(response.statusCode).toEqual(200)

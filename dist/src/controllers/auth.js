@@ -15,7 +15,7 @@ const user_model_1 = __importDefault(require("../models/user_model"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 /**
- * Helpers methods
+ * Helpers methods & variables
  */
 function sendError(res, error) {
     res.status(400).send({
@@ -35,7 +35,7 @@ function generateTokens(userId) {
         return { 'accessToken': accessToken, 'refreshToken': refreshToken };
     });
 }
-// end of helpers methods
+// end of helpers methods & variables
 /**
  **explain for registration**
  1.Check if the user is valid
@@ -118,7 +118,7 @@ const refresh = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (refreshToken == null)
         return sendError(res, 'authentication missing');
     try {
-        const user = yield jsonwebtoken_1.default.verify(refreshToken, process.env.REFRESH_TOKEN_SECRECT);
+        const user = jsonwebtoken_1.default.verify(refreshToken, process.env.REFRESH_TOKEN_SECRECT);
         const userObj = yield user_model_1.default.findById(user['_id']); // NEED TO BE user._id
         if (!userObj)
             return sendError(res, 'fail validating token');
@@ -127,8 +127,11 @@ const refresh = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             yield userObj.save();
             return sendError(res, 'fail validating token');
         }
-        const tokens = yield generateTokens(userObj._id.toString()); //bug
-        userObj.refresh_tokens[userObj.refresh_tokens.indexOf(refreshToken)] = tokens['refreshToken'];
+        const accessToken = yield jsonwebtoken_1.default.sign({ 'id': user['id'] }, process.env.ACCESS_TOKEN_SECRET, { 'expiresIn': process.env.JWT_TOKEN_EXPIRATION });
+        const new_refreshToken = yield jsonwebtoken_1.default.sign({ '_id': user['id'] }, process.env.REFRESH_TOKEN_SECRECT);
+        // const tokens = await generateTokens(userObj._id.toString())//bug since we get refreshToken from getTokenFrom Req
+        const tokens = { 'accessToken': accessToken, 'refreshToken': new_refreshToken };
+        userObj.refresh_tokens[userObj.refresh_tokens.indexOf(refreshToken)] = tokens['refreshToken']; // bug- cannot replace the token!
         yield userObj.save();
         return res.status(200).send(tokens);
     }
@@ -144,12 +147,12 @@ const refresh = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
  */
 const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = getTokenFromReq(req);
-    if (!refreshToken)
-        return sendError(res, 'invalid token');
+    if (refreshToken == null)
+        return sendError(res, 'authentication missing');
     try {
-        const user = yield jsonwebtoken_1.default.verify(refreshToken, process.env.REFRESH_TOKEN_SECRECT);
-        const userObj = yield user_model_1.default.findById(user['_id']); // maybe NEED TO BE user._id
-        if (!userObj)
+        const user = jsonwebtoken_1.default.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+        const userObj = yield user_model_1.default.findById(user.id);
+        if (userObj == null)
             return sendError(res, 'fail validating token');
         if (!userObj.refresh_tokens.includes(refreshToken)) {
             userObj.refresh_tokens = [];
@@ -158,11 +161,10 @@ const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         userObj.refresh_tokens.splice(userObj.refresh_tokens.indexOf(refreshToken), 1);
         yield userObj.save();
-        res.status(200).send();
+        return res.status(200).send();
     }
     catch (err) {
-        console.log(err);
-        return sendError(res, 'fail logout');
+        return sendError(res, 'fail validating token');
     }
 });
 const authenticaticatedMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -171,7 +173,7 @@ const authenticaticatedMiddleware = (req, res, next) => __awaiter(void 0, void 0
         return sendError(res, 'auth us missing');
     }
     try {
-        const user = yield jsonwebtoken_1.default.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        const user = jsonwebtoken_1.default.verify(token, process.env.ACCESS_TOKEN_SECRET);
         req.body.userId = user['_id'];
         console.log("token user:", user);
         next();

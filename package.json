@@ -4,7 +4,7 @@
   "description": "My first react-native app",
   "main": "app.js",
   "scripts": {
-    "test": "tsc && jest --detectOpenHandles --forceExit ./dist/src/tests",
+    "test": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/src/tests",
     "start": "tsc && node dist/src/app.js",
     "lint": "eslint . --ext .ts",
     "devstart": "nodemon ./src/app.ts"
