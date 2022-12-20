@@ -24,7 +24,7 @@ async function generateTokens(userId:string){
     )
     const refreshToken = await jwt.sign(
         {'id': userId},
-        process.env.REFRESH_TOKEN_SECRECT,
+        process.env.REFRESH_TOKEN_SECRET,
     )
 
     return {'accessToken':accessToken, 'refreshToken':refreshToken}
@@ -97,29 +97,17 @@ const login = async (req:Request, res:Response) => {
         if(!match){
             return sendError(res, 'incorrect user or password')
         }
+        const tokens = await generateTokens(user['_id'].toString())
 
-
-        const accessToken = await jwt.sign(
-            {'_id': user._id},
-            process.env.ACCESS_TOKEN_SECRET,
-            { 'expiresIn' :process.env.JWT_TOKEN_EXPIRATION}
-        )
-        const refreshToken = await jwt.sign(
-            {'_id': user._id},
-            process.env.REFRESH_TOKEN_SECRECT,
-        )
-        //const tokens = await generateTokens(user['_id'].toString())
-
-        
         if(user.refresh_tokens == null){
-            user.refresh_tokens = [refreshToken]
+            user.refresh_tokens = [tokens.refreshToken]
         } else {
-            user.refresh_tokens.push(refreshToken)
+            user.refresh_tokens.push(tokens.refreshToken)
         }
         await user.save()
 
         // in the end of the block
-        res.status(200).send({'accessToken':accessToken, 'refreshToken':refreshToken})
+        res.status(200).send({'accessToken':tokens.accessToken, 'refreshToken':tokens.refreshToken})
     }
     catch(err){
         console.log('Error:', err)
@@ -133,8 +121,8 @@ const refresh = async (req:Request, res:Response) => {
     if (refreshToken == null) return sendError(res,'authentication missing')
 
     try {
-        const user: TokenInfo = <TokenInfo>jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRECT)
-        const userObj = await User.findById(user['_id'])// NEED TO BE user._id
+        const user: TokenInfo = <TokenInfo>jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
+        const userObj = await User.findById(user['id'])// NEED TO BE user._id
         if (!userObj)    return sendError(res, 'fail validating token')        
 
         if (!userObj.refresh_tokens.includes(refreshToken)){
@@ -142,7 +130,7 @@ const refresh = async (req:Request, res:Response) => {
             await userObj.save()
             return sendError(res, 'fail validating token')
         }
-        const tokens = await generateTokens(user['_id'])
+        const tokens = await generateTokens(user['id'])
 
         userObj.refresh_tokens[userObj.refresh_tokens.indexOf(refreshToken)] = tokens['refreshToken'] 
 
@@ -166,7 +154,7 @@ const logout = async (req:Request, res:Response) => {
     if (refreshToken == null) return sendError(res,'authentication missing')
 
     try{
-        const user:TokenInfo = <TokenInfo>jwt.verify(refreshToken,process.env.REFRESH_TOKEN_SECRECT)
+        const user:TokenInfo = <TokenInfo>jwt.verify(refreshToken,process.env.REFRESH_TOKEN_SECRET)
         const userObj = await User.findById(user.id)
         if (userObj == null) return sendError(res,'fail validating token')
 
