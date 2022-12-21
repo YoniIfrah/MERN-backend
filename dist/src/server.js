@@ -13,6 +13,9 @@ else {
     dotenv_1.default.config();
 }
 // dotenv.config()
+// socket io
+const http_1 = __importDefault(require("http"));
+const server = http_1.default.createServer(app);
 // body-parser
 const body_parser_1 = __importDefault(require("body-parser"));
 app.use(body_parser_1.default.urlencoded({ extended: true, limit: '1mb' }));
@@ -55,5 +58,5 @@ if (process.env.NODE_ENV == "development") {
     const specs = (0, swagger_jsdoc_1.default)(options);
     app.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(specs));
 }
-module.exports = app;
+module.exports = server;
 //# sourceMappingURL=server.js.map

@@ -10,6 +10,10 @@ if (process.env.NODE_ENV == 'test'){
 }
 // dotenv.config()
 
+// socket io
+import http from 'http';
+const server = http.createServer(app);
+
 // body-parser
 import bodyParser from 'body-parser'
 app.use(bodyParser.urlencoded({extended: true, limit: '1mb'}))
@@ -60,4 +64,4 @@ if (process.env.NODE_ENV == "development") {
     app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
  }
 
-export = app
+export = server
