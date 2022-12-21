@@ -38,4 +38,26 @@ app.use('/post',postRouter);
 import authRouter from './routes/auth_route'
 app.use('/auth',authRouter);
 
+//implementing swagger
+import swaggerUI from "swagger-ui-express"
+import swaggerJsDoc from "swagger-jsdoc"
+
+if (process.env.NODE_ENV == "development") {
+    const options = {
+        definition: {
+            openapi: "3.0.0",
+            info: {
+                title: "Web Dev REST API",
+                version: "1.0.0",
+                description: "REST server including authentication using JWT",
+ },
+            servers: [{url: "http://localhost:3000",},],
+        },
+        //searching for all the API's that are inside the route dir
+        apis: ["./src/routes/*.ts"],
+    };
+    const specs = swaggerJsDoc(options);
+    app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
+ }
+
 export = app

@@ -72,7 +72,7 @@ describe('Auth Tests', () => {
     }));
     //test expired token
     jest.setTimeout(30000);
-    test("test expiered token", () => __awaiter(void 0, void 0, void 0, function* () {
+    test("test expired token", () => __awaiter(void 0, void 0, void 0, function* () {
         yield new Promise(r => setTimeout(r, 10000));
         const response = yield (0, supertest_1.default)(server_1.default).get('/post').set('Authorization', 'JWT ' + accessToken);
         expect(response.statusCode).not.toEqual(200);

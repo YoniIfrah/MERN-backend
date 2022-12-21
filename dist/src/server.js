@@ -6,6 +6,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
 const dotenv_1 = __importDefault(require("dotenv"));
+// if (process.env.NODE_ENV == 'test'){
+//     dotenv.config({ path: './.testenv' })
+// }else{
+//     dotenv.config()
+// }
 dotenv_1.default.config();
 // body-parser
 const body_parser_1 = __importDefault(require("body-parser"));
@@ -29,5 +34,25 @@ const post_route_1 = __importDefault(require("./routes/post_route"));
 app.use('/post', post_route_1.default);
 const auth_route_1 = __importDefault(require("./routes/auth_route"));
 app.use('/auth', auth_route_1.default);
+//implementing swagger
+const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
+const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
+if (process.env.NODE_ENV == "development") {
+    const options = {
+        definition: {
+            openapi: "3.0.0",
+            info: {
+                title: "Web Dev REST API",
+                version: "1.0.0",
+                description: "REST server including authentication using JWT",
+            },
+            servers: [{ url: "http://localhost:3000", },],
+        },
+        //searching for all the API's that are inside the route dir
+        apis: ["./src/routes/*.ts"],
+    };
+    const specs = (0, swagger_jsdoc_1.default)(options);
+    app.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(specs));
+}
 module.exports = app;
 //# sourceMappingURL=server.js.map

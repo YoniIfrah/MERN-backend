@@ -107,7 +107,7 @@ const login = async (req:Request, res:Response) => {
         await user.save()
 
         // in the end of the block
-        res.status(200).send({'accessToken':tokens.accessToken, 'refreshToken':tokens.refreshToken})
+        res.status(200).send(tokens)
     }
     catch(err){
         console.log('Error:', err)

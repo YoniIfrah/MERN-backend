@@ -96,17 +96,16 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!match) {
             return sendError(res, 'incorrect user or password');
         }
-        const accessToken = yield jsonwebtoken_1.default.sign({ '_id': user._id }, process.env.ACCESS_TOKEN_SECRET, { 'expiresIn': process.env.JWT_TOKEN_EXPIRATION });
-        const refreshToken = yield jsonwebtoken_1.default.sign({ '_id': user._id }, process.env.REFRESH_TOKEN_SECRECT);
+        const tokens = yield generateTokens(user['_id'].toString());
         if (user.refresh_tokens == null) {
-            user.refresh_tokens = [refreshToken];
+            user.refresh_tokens = [tokens.refreshToken];
         }
         else {
-            user.refresh_tokens.push(refreshToken);
+            user.refresh_tokens.push(tokens.refreshToken);
         }
         yield user.save();
         // in the end of the block
-        res.status(200).send({ 'accessToken': accessToken, 'refreshToken': refreshToken });
+        res.status(200).send(tokens);
     }
     catch (err) {
         console.log('Error:', err);
@@ -118,8 +117,8 @@ const refresh = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (refreshToken == null)
         return sendError(res, 'authentication missing');
     try {
-        const user = jsonwebtoken_1.default.verify(refreshToken, process.env.REFRESH_TOKEN_SECRECT);
-        const userObj = yield user_model_1.default.findById(user['_id']); // NEED TO BE user._id
+        const user = jsonwebtoken_1.default.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+        const userObj = yield user_model_1.default.findById(user['id']); // NEED TO BE user._id
         if (!userObj)
             return sendError(res, 'fail validating token');
         if (!userObj.refresh_tokens.includes(refreshToken)) {
@@ -127,11 +126,8 @@ const refresh = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             yield userObj.save();
             return sendError(res, 'fail validating token');
         }
-        const accessToken = yield jsonwebtoken_1.default.sign({ 'id': user['id'] }, process.env.ACCESS_TOKEN_SECRET, { 'expiresIn': process.env.JWT_TOKEN_EXPIRATION });
-        const new_refreshToken = yield jsonwebtoken_1.default.sign({ '_id': user['id'] }, process.env.REFRESH_TOKEN_SECRECT);
-        // const tokens = await generateTokens(userObj._id.toString())//bug since we get refreshToken from getTokenFrom Req
-        const tokens = { 'accessToken': accessToken, 'refreshToken': new_refreshToken };
-        userObj.refresh_tokens[userObj.refresh_tokens.indexOf(refreshToken)] = tokens['refreshToken']; // bug- cannot replace the token!
+        const tokens = yield generateTokens(user['id']);
+        userObj.refresh_tokens[userObj.refresh_tokens.indexOf(refreshToken)] = tokens['refreshToken'];
         yield userObj.save();
         return res.status(200).send(tokens);
     }
@@ -164,6 +160,7 @@ const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(200).send();
     }
     catch (err) {
+        console.log(err);
         return sendError(res, 'fail validating token');
     }
 });
