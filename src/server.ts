@@ -3,12 +3,12 @@
 import express from 'express'
 const app = express();
 import dotenv from 'dotenv'
-// if (process.env.NODE_ENV == 'test'){
-//     dotenv.config({ path: './.testenv' })
-// }else{
-//     dotenv.config()
-// }
-dotenv.config()
+if (process.env.NODE_ENV == 'test'){
+    dotenv.config({ path: './.testenv' })
+}else{
+    dotenv.config()
+}
+// dotenv.config()
 
 // body-parser
 import bodyParser from 'body-parser'

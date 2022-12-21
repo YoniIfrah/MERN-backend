@@ -6,12 +6,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
 const dotenv_1 = __importDefault(require("dotenv"));
-// if (process.env.NODE_ENV == 'test'){
-//     dotenv.config({ path: './.testenv' })
-// }else{
-//     dotenv.config()
-// }
-dotenv_1.default.config();
+if (process.env.NODE_ENV == 'test') {
+    dotenv_1.default.config({ path: './.testenv' });
+}
+else {
+    dotenv_1.default.config();
+}
+// dotenv.config()
 // body-parser
 const body_parser_1 = __importDefault(require("body-parser"));
 app.use(body_parser_1.default.urlencoded({ extended: true, limit: '1mb' }));
