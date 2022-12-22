@@ -11,6 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+const Error_1 = __importDefault(require("../common/Error"));
+const Response_1 = __importDefault(require("../common/Response"));
 const post_model_1 = __importDefault(require("../models/post_model"));
 const getAllPostsEvent = () => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Entered getAllPostsEvent");
@@ -47,12 +49,14 @@ const addNewPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     });
     try {
         const newPost = yield post.save();
-        console.log('save post in db');
-        res.status(200).send(newPost);
+        // console.log('save post in db')
+        // res.status(200).send(newPost)
+        return new Response_1.default(newPost, req.params.userId, null);
     }
     catch (error) {
-        console.log("fail to save post in db");
-        res.status(400).send({ "error": error.message });
+        // console.log("fail to save post in db")
+        // res.status(400).send({ "error": error.message})
+        return new Response_1.default(null, req.params.userId, new Error_1.default(400, error.message));
     }
 });
 const getPostById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

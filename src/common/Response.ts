@@ -1,12 +1,12 @@
-import Error from "./Error"
+import myError from "./Error"
 import { Response } from 'express'
 
 class myResponse{ 
     body: object;
     userId: String;
-    err:Error;
+    err:myError;
 
-    constructor(body:object = {}, userId:String = 'unknown', err?:Error) {
+    constructor(body:object = {}, userId:String = 'unknown', err?:myError) {
         this.body = body
         this.userId = userId
         this.err = err        

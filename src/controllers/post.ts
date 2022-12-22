@@ -1,3 +1,5 @@
+import myError from '../common/Error'
+import myResponse from '../common/Response'
 import Post from '../models/post_model'
 import { Request, Response } from 'express'
 
@@ -39,9 +41,11 @@ const addNewPost = async (req:Request, res:Response) => {
         const newPost = await post.save()
         console.log('save post in db')
         res.status(200).send(newPost)
+        // return new myResponse(newPost, req.params.userId, null)
     } catch (error) {
         console.log("fail to save post in db")
         res.status(400).send({ "error": error.message})
+        // return new myResponse(null, req.params.userId, new myError(400, error.message))
     }
 
 } 

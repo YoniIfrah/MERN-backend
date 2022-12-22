@@ -1,4 +1,4 @@
-class Error{
+class myError{
    code:number;
    message:String;
    constructor(code: number = 0, message: String = 'empty message'){
@@ -6,4 +6,4 @@ class Error{
        this.message = message
    }
 }
-export = Error
+export = myError

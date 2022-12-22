@@ -1,9 +1,9 @@
 "use strict";
-class Error {
+class myError {
     constructor(code = 0, message = 'empty message') {
         this.code = code;
         this.message = message;
     }
 }
-module.exports = Error;
+module.exports = myError;
 //# sourceMappingURL=Error.js.map
