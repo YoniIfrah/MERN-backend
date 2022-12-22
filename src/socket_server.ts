@@ -29,7 +29,7 @@ export = (server: http.Server) => {
             if (err){
                 return next(new Error('Authentication error'));
             } else{
-                socket.data.user = user.id // maybe need to be user.id
+                socket.data.user = user.id
                 return next()
             }
         })

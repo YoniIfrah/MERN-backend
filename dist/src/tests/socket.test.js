@@ -51,7 +51,7 @@ const connectUser = (userEmail, userPassword) => __awaiter(void 0, void 0, void 
     const client = { socket: socket, accessToken: token, id: userId };
     return client;
 });
-describe("my awesome project", () => {
+describe("My project", () => {
     jest.setTimeout(15000);
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
         yield post_model_1.default.remove();

@@ -13,8 +13,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 const socket_io_1 = require("socket.io");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const echoHandler_1 = __importDefault(require("./socket/echoHandler"));
+const postHandler_1 = __importDefault(require("./socket/postHandler"));
+const chatHandler_1 = __importDefault(require("./socket/chatHandler"));
 module.exports = (server) => {
     const io = new socket_io_1.Server(server);
+    /**
+     * Since we have register/login API
+       We would like to authenticate the client using the accessToken
+     * reading token from client
+     * if the token is not valid or any other error happend then return error
+     * else extrating the id from of the user and keep it inside of user data of the socket
+     */
     io.use((socket, next) => __awaiter(void 0, void 0, void 0, function* () {
         let token = socket.handshake.auth.token;
         if (token == null)
@@ -32,9 +42,9 @@ module.exports = (server) => {
     }));
     io.on('connection', (socket) => __awaiter(void 0, void 0, void 0, function* () {
         console.log('a user connected ' + socket.id);
-        //    echoHandler(io,socket)
-        //    postHandler(io,socket)
-        //    chatHandler(io,socket)
+        (0, echoHandler_1.default)(io, socket);
+        (0, postHandler_1.default)(io, socket);
+        (0, chatHandler_1.default)(io, socket);
         const userId = socket.data.user;
         yield socket.join(userId);
     }));
