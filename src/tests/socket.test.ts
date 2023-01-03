@@ -100,4 +100,14 @@ describe("My project", () => {
         })
         client1.socket.emit("chat:send_message",{'to' : client2.id, 'message' : message})
     })
+
+    test("postAdd", (done) => {
+        client1.socket.on('post:add.response', (arg) => {
+            expect(arg.message).toEqual('this is my message')
+            expect(arg.sender).toEqual(client1.id)
+            done();
+        });
+        client1.socket.emit('post:add',{'message':'this is my message'})
+    })
+    //need to add tests for all postHandler methods
 });

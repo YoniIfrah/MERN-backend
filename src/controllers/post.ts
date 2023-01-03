@@ -29,7 +29,7 @@ const getAllPosts = async (req:Request, res:Response) => {
     }    
 }
 
-const addNewPost = async (req:Request, res:Response) => {
+const addNewPost = async (req:Request | myResponse, res:Response) => {
     console.log("this is the request body: ", req.body);
 
     const post = new Post({
@@ -38,21 +38,27 @@ const addNewPost = async (req:Request, res:Response) => {
     })
 
     try {
+        //need to do this to the rest of the API in this file
         const newPost = await post.save()
-        console.log('save post in db')
-        res.status(200).send(newPost)
-        // return new myResponse(newPost, req.params.userId, null)
+        // console.log('save post in db')
+        // res.status(200).send(newPost)
+        const myRes = new myResponse(newPost, newPost.sender, null)
+        myRes.sendRestResponse(res)
     } catch (error) {
-        console.log("fail to save post in db")
-        res.status(400).send({ "error": error.message})
-        // return new myResponse(null, req.params.userId, new myError(400, error.message))
+        // console.log("fail to save post in db")
+        // res.status(400).send({ "error": error.message})
+        const myRes = new myResponse(null, post.sender, new myError(400, error.message))
+        myRes.sendRestResponse(res)
     }
 
 } 
 
-const getPostById = async (req:Request, res:Response) => {
+const getPostById = async (req:Request , res:Response) => {
     const id = req.params.id
     console.log('getPostById: ', id)
+    if ( id == '12345'){
+        console.log('stop')
+    }
     if ( id == null || id == undefined ) {
         res.status(400).send({
             'status': 'fail',
@@ -61,13 +67,17 @@ const getPostById = async (req:Request, res:Response) => {
     }
     try {
         const posts = await Post.findById(id)
-        res.status(200).send(posts)
+        // res.status(200).send(posts)
+        const myRes = new myResponse(posts,id, null)
+        myRes.sendRestResponse(res)
 
     } catch (error) {
-        res.status(400).send({
-            'status': 'fail',
-            'message': error.message
-        })
+        // res.status(400).send({
+        //     'status': 'fail',
+        //     'message': error.message
+        // })
+        const myRes = new myResponse(null, id, new myError(400, error.message))
+        myRes.sendRestResponse(res)
     }
 
 }

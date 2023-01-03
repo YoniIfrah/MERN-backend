@@ -51,12 +51,14 @@ const addNewPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const newPost = yield post.save();
         // console.log('save post in db')
         // res.status(200).send(newPost)
-        return new Response_1.default(newPost, req.params.userId, null);
+        const myRes = new Response_1.default(newPost, newPost.sender, null);
+        myRes.sendRestResponse(res);
     }
     catch (error) {
         // console.log("fail to save post in db")
         // res.status(400).send({ "error": error.message})
-        return new Response_1.default(null, req.params.userId, new Error_1.default(400, error.message));
+        const myRes = new Response_1.default(null, post.sender, new Error_1.default(400, error.message));
+        myRes.sendRestResponse(res);
     }
 });
 const getPostById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

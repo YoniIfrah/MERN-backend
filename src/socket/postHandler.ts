@@ -13,9 +13,11 @@ export = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>,
     }
 
     const getPostById = (payload) => {
+        //need to implement this
         socket.emit('echo:echo', payload)
     }
     const addNewPost = (payload) => {
+        //need to implement this
         socket.emit('echo:echo', payload)
     }
 

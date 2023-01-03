@@ -7,7 +7,8 @@ class myResponse {
     }
     sendRestResponse(res) {
         if (this.err == null) {
-            res.status(200).send({ 'status': 'ok', 'post': this.body });
+            res.status(200).send(this.body);
+            // res.status(200).send({ 'status': 'ok', 'message': this.body.message, 'sender': this.body.sender, '_id':this.userId })
         }
         else {
             res.status(this.err.code).send({
