@@ -4,11 +4,13 @@ import { Response } from 'express'
 class myResponse{ 
     body: any;
     userId: String;
+    params: any;
     err:myError;
 
-    constructor(body:any = {}, userId:String = 'unknown', err?:myError) {
+    constructor(body:any = {}, userId:String = 'unknown', params=null ,err?:myError) {
         this.body = body
         this.userId = userId
+        this.params = params
         this.err = err
     }
     sendRestResponse(res:Response){

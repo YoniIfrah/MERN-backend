@@ -2,6 +2,7 @@ import express from 'express'
 const router = express.Router();
 import post from '../controllers/post'
 import auth from '../controllers/auth'
+import myRequest from '../common/Request'
 
 /**
 * @swagger
@@ -107,7 +108,17 @@ router.get('/:id', auth.authenticaticatedMiddleware, post.getPostById)
  *               $ref: '#/components/schemas/Post'
  *  
  */
-router.post('/', auth.authenticaticatedMiddleware, post.addNewPost)
+router.post('/', auth.authenticaticatedMiddleware, async (req, res) =>{
+    try{
+        const resposne = await post.addNewPost(myRequest.fromRestRequest(req))
+        resposne.sendRestResponse(res)
+    } catch(err){
+        res.status(400).send({
+            'status': 'fail',
+            'message': err.message
+        })
+    }
+} )
 
 /**
  * @swagger

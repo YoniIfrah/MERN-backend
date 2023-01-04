@@ -1,5 +1,6 @@
 import myError from '../common/Error'
 import myResponse from '../common/Response'
+import myRequest from '../common/Request'
 import Post from '../models/post_model'
 import { Request, Response } from 'express'
 
@@ -29,7 +30,7 @@ const getAllPosts = async (req:Request, res:Response) => {
     }    
 }
 
-const addNewPost = async (req:Request | myResponse, res:Response) => {
+const addNewPost = async (req:myRequest) => {
     console.log("this is the request body: ", req.body);
 
     const post = new Post({
@@ -42,13 +43,11 @@ const addNewPost = async (req:Request | myResponse, res:Response) => {
         const newPost = await post.save()
         // console.log('save post in db')
         // res.status(200).send(newPost)
-        const myRes = new myResponse(newPost, newPost.sender, null)
-        myRes.sendRestResponse(res)
+        return new myResponse(newPost, req.userId, null)
     } catch (error) {
         // console.log("fail to save post in db")
         // res.status(400).send({ "error": error.message})
         const myRes = new myResponse(null, post.sender, new myError(400, error.message))
-        myRes.sendRestResponse(res)
     }
 
 } 
@@ -67,17 +66,15 @@ const getPostById = async (req:Request , res:Response) => {
     }
     try {
         const posts = await Post.findById(id)
-        // res.status(200).send(posts)
-        const myRes = new myResponse(posts,id, null)
-        myRes.sendRestResponse(res)
+        res.status(200).send(posts)
 
     } catch (error) {
-        // res.status(400).send({
-        //     'status': 'fail',
-        //     'message': error.message
-        // })
-        const myRes = new myResponse(null, id, new myError(400, error.message))
-        myRes.sendRestResponse(res)
+        res.status(400).send({
+            'status': 'fail',
+            'message': error.message
+        })
+        // const myRes = new myResponse(null, id, new myError(400, error.message))
+        // myRes.sendRestResponse(res)
     }
 
 }
