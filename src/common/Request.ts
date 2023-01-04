@@ -1,19 +1,19 @@
-import { Request } from 'express'
-
+import { Request } from "express";
 
 class myRequest{ 
     body:any;
-    userId:string;
+    userId:string | null;
     params: any;
-    constructor(body: any = {} ,userId: string = 'unknown', params=null){
+    query:any;
+    constructor(body: any = {} ,userId: string|null = null, params=null, query=null){
         this.body = body
+        this.userId = userId == null ? params.id : userId
         this.params = params
-        this.userId = userId
+        this.query = query
     }
-    //cons
-    static fromRestRequest(req: Request){ 
+    static fromRestRequest(req:Request){ 
         console.log("req.params.userid = ", req.params.userid)
-        return new myRequest(req.body, req.params.userid,  req.params)
+        return new myRequest(req.body, req.params.userid, req.params, req.query)
     }
 }
 export = myRequest

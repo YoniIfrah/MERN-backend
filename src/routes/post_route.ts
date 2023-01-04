@@ -57,7 +57,19 @@ import myRequest from '../common/Request'
  *                  $ref: '#/components/schemas/Post'
  *  
  */
-router.get('/', auth.authenticaticatedMiddleware, post.getAllPosts)
+router.get('/', auth.authenticaticatedMiddleware, async (req, res) => {
+    try{
+        const response = await post.getAllPosts(myRequest.fromRestRequest(req))
+        response.sendRestResponse(res)
+    }  catch (err) {
+        res.status(400).send({
+            'status': 'fail',
+            'message': err.message
+        })
+    }
+
+})
+//post.getAllPosts)
 
 /**
  * @swagger
@@ -83,7 +95,17 @@ router.get('/', auth.authenticaticatedMiddleware, post.getAllPosts)
  *               $ref: '#/components/schemas/Post'
  *  
  */
-router.get('/:id', auth.authenticaticatedMiddleware, post.getPostById)
+router.get('/:id', auth.authenticaticatedMiddleware,async (req , res) => {
+    try{
+        const response = await post.getPostById(myRequest.fromRestRequest(req))
+        response.sendRestResponse(res)
+    } catch(err) {
+        res.status(400).send({
+            'status': 'fail',
+            'message': err.message
+        })
+    }
+})//post.getPostById)
 
 /**
  * @swagger
@@ -150,7 +172,19 @@ router.post('/', auth.authenticaticatedMiddleware, async (req, res) =>{
  *               $ref: '#/components/schemas/Post'
  *  
  */
-router.put('/:id', auth.authenticaticatedMiddleware, post.putPostById)
+router.put('/:id', auth.authenticaticatedMiddleware,async (req, res) => {
+    try {
+        const resposne = await post.putPostById(myRequest.fromRestRequest(req))
+        resposne.sendRestResponse(res)
+    } catch (err) {
+        res.status(400).send({
+            'status': 'fail',
+            'message': err.message
+        })
+    }
+    
+})
+//post.putPostById)
 
 
 export = router;

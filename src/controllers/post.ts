@@ -2,7 +2,7 @@ import myError from '../common/Error'
 import myResponse from '../common/Response'
 import myRequest from '../common/Request'
 import Post from '../models/post_model'
-import { Request, Response } from 'express'
+// import { Request, Response } from 'express'
 
 const getAllPostsEvent = async () => { 
     console.log("Entered getAllPostsEvent")
@@ -14,19 +14,18 @@ const getAllPostsEvent = async () => {
     }
 }
 
-const getAllPosts = async (req:Request, res:Response) => {
+const getAllPosts = async (req:myRequest) => {
     try {
         let posts = {}
-        if (req.query.sender == null){
-            posts = await Post.find()   
+        if (req.query.sender == null || req.query == null){
+            posts = await Post.find()
         } else {
             posts = await Post.find({'sender': req.query.sender})
         }
-        posts = await Post.find()
-        res.status(200).send(posts)
+          return new myResponse(posts)
     } catch (error) {
         console.log("fail to get posts in db")
-        res.status(400).send({ "error": error.message})
+        return new myResponse(null, null, null, new myError(400, error.message))
     }    
 }
 
@@ -43,63 +42,47 @@ const addNewPost = async (req:myRequest) => {
         const newPost = await post.save()
         // console.log('save post in db')
         // res.status(200).send(newPost)
-        return new myResponse(newPost, req.userId, null)
+        return new myResponse(newPost, req.userId)
     } catch (error) {
         // console.log("fail to save post in db")
         // res.status(400).send({ "error": error.message})
-        const myRes = new myResponse(null, post.sender, new myError(400, error.message))
+        return new myResponse(null, post.sender,null, new myError(400, error.message))
     }
 
 } 
 
-const getPostById = async (req:Request , res:Response) => {
+const getPostById = async (req:myRequest) => {
     const id = req.params.id
     console.log('getPostById: ', id)
     if ( id == '12345'){
-        console.log('stop')
+        console.log('stoping test')
     }
-    if ( id == null || id == undefined ) {
-        res.status(400).send({
-            'status': 'fail',
-            'message': 'null or undefined'
-        })
+    if ( id == null || id == undefined) {
+        return new myResponse(null, null, null, new myError(400, 'null or undifined id'))
     }
     try {
         const posts = await Post.findById(id)
-        res.status(200).send(posts)
-
-    } catch (error) {
-        res.status(400).send({
-            'status': 'fail',
-            'message': error.message
-        })
-        // const myRes = new myResponse(null, id, new myError(400, error.message))
-        // myRes.sendRestResponse(res)
+        return new myResponse(posts, id)
+    } catch (error) {  
+        return new myResponse(null, id, null, new myError(400, error.message))
     }
 
 }
 
-const putPostById = async (req:Request, res:Response) => {
+const putPostById = async (req:myRequest) => {
     const id = req.params.id
     console.log('putPostById: ', id)
     if ( id == null || id == undefined ) {
-        res.status(400).send({
-            'status': 'fail',
-            'message': 'id is null or undefined',
-        })
+        return new myResponse(null, id, new myError(400, 'id is null or undefined'))
     }
     try {
-        const posts = await Post.findByIdAndUpdate({'_id':id}, req.body).then(() =>{
-            Post.findOne({'_id':id}).then((posts) =>{
-                res.status(200).send(posts)
-            })
+        const posts = await Post.findByIdAndUpdate(id, req.body, {
+            new: true
         })
-
+        return new myResponse(posts, id)
     } catch (error) {
-        res.status(400).send({
-            'status': 'fail',
-            'message': error.message
-        })
+        return new myResponse(null, id, null,new myError(400, error.message))
+
     }
 
 }
