@@ -140,7 +140,7 @@ router.post('/', auth.authenticaticatedMiddleware, async (req, res) =>{
             'message': err.message
         })
     }
-} )
+})//post.addNewPost
 
 /**
  * @swagger
