@@ -47,11 +47,23 @@ export = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>,
             socket.emit('post:get_post_by_sender.response', {'status' : 'fail'})
         }
     }
+
+    const putPostById = async (payload) => {
+        console.log("putPostById handler")
+        try{
+            const res = await postController.putPostById(new myRequest(payload, socket.data.user,payload,payload))
+            socket.emit('post:put_post_by_id.response', res)
+        } catch(err) {
+            socket.emit('post:put_post_by_id.response', {'status' : 'fail'})
+        }
+
+    }
     console.log('register echo handlers')
     socket.on("post:get_all", getAllPosts)
     socket.on("post:get_by_id", getPostById)
     socket.on("post:post", addNewPost)
     socket.on("post:get_post_by_sender", getPostBySender)
-    //need to add the rest of the posts methods - getAllPosts+, addNewPost+, getPostById+, putPostById-, getPostBySender
+    socket.on("post:put_post_by_id",putPostById)
+    //need to add the rest of the posts methods - getAllPosts+, addNewPost+, getPostById+, putPostById-,
 }
  

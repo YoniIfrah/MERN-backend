@@ -62,6 +62,7 @@ const connectUser = async (userEmail, userPassword )=>{
  * once - fire thoe command and when it finish is deleted
  * on - like once but not geting deleted when it finishes
  * emit - send message to all clients that are in the same socket
+ * arg - the response we received
  */
 describe("My project", () => {
     jest.setTimeout(15000)
@@ -152,5 +153,19 @@ describe("My project", () => {
         });
         client1.socket.emit('post:get_post_by_sender', {'sender': '12345' })
     })
-    //need to add tests for all postHandler methods
+    test('Put Post By Id', done =>{
+        client1.socket.once('post:put_post_by_id.response', (arg) => {
+            expect(arg.body.message).toEqual('new post message')
+            expect(arg.body.sender).toEqual(client1.id)
+            done();
+        });
+        client1.socket.emit('post:put_post_by_id', {'id': newPostId, 'message': 'new post message'})
+    })
+    test('Put Post with worng Id', done =>{
+        client1.socket.once('post:put_post_by_id.response', (arg) => {
+            expect(arg.err.code).toEqual(400)
+            done();
+        });
+        client1.socket.emit('post:put_post_by_id', {'id': '12345', 'message': 'new post message'})
+    })
 });
