@@ -24,24 +24,23 @@ const getAllPostsEvent = () => __awaiter(void 0, void 0, void 0, function* () {
         return { status: 'FAIL', data: "" };
     }
 });
-const getAllPosts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllPosts = (req) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let posts = {};
-        if (req.query.sender == null) {
+        if (req.query.sender == null || req.query == null) {
             posts = yield post_model_1.default.find();
         }
         else {
             posts = yield post_model_1.default.find({ 'sender': req.query.sender });
         }
-        posts = yield post_model_1.default.find();
-        res.status(200).send(posts);
+        return new Response_1.default(posts);
     }
     catch (error) {
         console.log("fail to get posts in db");
-        res.status(400).send({ "error": error.message });
+        return new Response_1.default(null, null, null, new Error_1.default(400, error.message));
     }
 });
-const addNewPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const addNewPost = (req) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("this is the request body: ", req.body);
     const post = new post_model_1.default({
         message: req.body.message,
@@ -49,59 +48,43 @@ const addNewPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     });
     try {
         const newPost = yield post.save();
-        // console.log('save post in db')
-        // res.status(200).send(newPost)
-        const myRes = new Response_1.default(newPost, newPost.sender, null);
-        myRes.sendRestResponse(res);
+        return new Response_1.default(newPost, req.userId);
     }
     catch (error) {
-        // console.log("fail to save post in db")
-        // res.status(400).send({ "error": error.message})
-        const myRes = new Response_1.default(null, post.sender, new Error_1.default(400, error.message));
-        myRes.sendRestResponse(res);
+        return new Response_1.default(null, post.sender, null, new Error_1.default(400, error.message));
     }
 });
-const getPostById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getPostById = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const id = req.params.id;
     console.log('getPostById: ', id);
+    if (id == '12345') {
+        console.log('stoping test');
+    }
     if (id == null || id == undefined) {
-        res.status(400).send({
-            'status': 'fail',
-            'message': 'null or undefined'
-        });
+        return new Response_1.default(null, null, null, new Error_1.default(400, 'null or undifined id'));
     }
     try {
         const posts = yield post_model_1.default.findById(id);
-        res.status(200).send(posts);
+        return new Response_1.default(posts, id);
     }
     catch (error) {
-        res.status(400).send({
-            'status': 'fail',
-            'message': error.message
-        });
+        return new Response_1.default(null, null, null, new Error_1.default(400, error.message));
     }
 });
-const putPostById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const putPostById = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const id = req.params.id;
     console.log('putPostById: ', id);
     if (id == null || id == undefined) {
-        res.status(400).send({
-            'status': 'fail',
-            'message': 'id is null or undefined',
-        });
+        return new Response_1.default(null, id, new Error_1.default(400, 'id is null or undefined'));
     }
     try {
-        const posts = yield post_model_1.default.findByIdAndUpdate({ '_id': id }, req.body).then(() => {
-            post_model_1.default.findOne({ '_id': id }).then((posts) => {
-                res.status(200).send(posts);
-            });
+        const posts = yield post_model_1.default.findByIdAndUpdate(id, req.body, {
+            new: true
         });
+        return new Response_1.default(posts, id);
     }
     catch (error) {
-        res.status(400).send({
-            'status': 'fail',
-            'message': error.message
-        });
+        return new Response_1.default(null, null, null, new Error_1.default(400, error.message));
     }
 });
 module.exports = { getAllPosts, addNewPost, getPostById, putPostById, getAllPostsEvent };

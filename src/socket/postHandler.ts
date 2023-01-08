@@ -64,6 +64,4 @@ export = (io:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>,
     socket.on("post:post", addNewPost)
     socket.on("post:get_post_by_sender", getPostBySender)
     socket.on("post:put_post_by_id",putPostById)
-    //need to add the rest of the posts methods - getAllPosts+, addNewPost+, getPostById+, putPostById-,
 }
- 

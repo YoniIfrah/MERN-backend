@@ -6,6 +6,7 @@ import { DefaultEventsMap } from "@socket.io/component-emitter";
 import request from 'supertest'
 import Post from '../models/post_model'
 import User from '../models/user_model'
+import Message from "../models/message_model";
 
 const userEmail = "user1@gmail.com"
 const userPassword = "12345"
@@ -14,7 +15,14 @@ const userEmail2 = "user2@gmail.com"
 const userPassword2 = "12345"
 
 var newPostId = ''
+const message = "hi... test 123"
 
+/**
+ * @param arr array of objects
+ * @param string the value to check if the key has it
+ * @param key name of the key to iterate inside the object
+ * @returns iterate the array of objects and checks if they value of the key exits then true else false
+ */
 const hasString = (arr: { [key: string]: string }[], string: string, key?: string): boolean => {
     return arr.some(obj => key ? obj.hasOwnProperty(key) && obj[key].includes(string) : Object.values(obj).some(value => value.includes(string)));
 };
@@ -63,6 +71,7 @@ const connectUser = async (userEmail, userPassword )=>{
  * on - like once but not geting deleted when it finishes
  * emit - send message to all clients that are in the same socket
  * arg - the response we received
+ * payload - is what we send  in the emit command
  */
 describe("My project", () => {
     jest.setTimeout(15000)
@@ -70,6 +79,7 @@ describe("My project", () => {
    beforeAll(async () => {
         await Post.remove()
         await User.remove()
+        await Message.remove();
         client1 = await connectUser(userEmail, userPassword )
         client2 = await connectUser(userEmail2, userPassword2 )
         console.log("finish beforeAll")
@@ -112,16 +122,6 @@ describe("My project", () => {
     });
 
 
-    test("Test chat messages", (done)=>{
-        const message = "hi... test 123"
-        client2.socket.once('chat:message',(args)=>{
-            expect(args.to).toBe(client2.id)
-            expect(args.message).toBe(message)
-            expect(args.from).toBe(client1.id)
-            done()
-        })
-        client1.socket.emit("chat:send_message",{'to' : client2.id, 'message' : message})
-    })
     test('Get Post By ID', done =>{
         client1.socket.once('post:get_by_id.response', (arg) => {
             expect(arg.body.message).toEqual('this is my message')
@@ -167,5 +167,27 @@ describe("My project", () => {
             done();
         });
         client1.socket.emit('post:put_post_by_id', {'id': '12345', 'message': 'new post message'})
+    })
+    test("Test chat messages", (done)=>{
+        client2.socket.once('chat:message',(args)=>{
+            expect(args.to).toBe(client2.id)
+            expect(args.message).toBe(message)
+            expect(args.from).toBe(client1.id)
+            done()
+        })
+        console.log(`cient 1 ${client1.id}`)
+        console.log(`cient 2 ${client2.id}`)
+        client1.socket.emit("chat:send_message",{'to' : client2.id, 'message' : message, 'from' : client1.id})
+    })
+    test("Test chat messages - get all messages by ", (done)=>{
+        client1.socket.once('chat:get_all_messages_by_id',(args)=>{
+            console.log(args)
+            // may need to check for a lot of messages
+            expect(args[0].sender).toBe(client1.id)
+            expect(args[0].reciver).toBe(client2.id)
+            expect(args[0].message).toBe(message)
+            done()
+        })
+        client1.socket.emit("chat:get_all_messages_by_id",{'sender' : client1.id})
     })
 });

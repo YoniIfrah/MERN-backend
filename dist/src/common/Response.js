@@ -1,14 +1,15 @@
 "use strict";
 class myResponse {
-    constructor(body = {}, userId = 'unknown', err) {
+    constructor(body = {}, userId, params, err) {
+        this.userId = 'unknown user';
         this.body = body;
         this.userId = userId;
+        this.params = params;
         this.err = err;
     }
     sendRestResponse(res) {
-        if (this.err == null) {
+        if (this.err == null || this.err == undefined) {
             res.status(200).send(this.body);
-            // res.status(200).send({ 'status': 'ok', 'message': this.body.message, 'sender': this.body.sender, '_id':this.userId })
         }
         else {
             res.status(this.err.code).send({
