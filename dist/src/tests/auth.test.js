@@ -19,8 +19,8 @@ const user_model_1 = __importDefault(require("../models/user_model"));
 const post_model_1 = __importDefault(require("../models/post_model"));
 const userEmail = 'user1@gmail.com';
 const password = '12345';
-var accessToken = '';
-var refreshToken = '';
+let accessToken = '';
+let refreshToken = '';
 beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
     yield post_model_1.default.remove();
     yield user_model_1.default.remove();

@@ -4,10 +4,10 @@ import mongoose  from 'mongoose'
 import User  from '../models/user_model'
 import Post  from '../models/post_model'
 
-const userEmail: string = 'user1@gmail.com'
-const password: string = '12345'
-var accessToken: string = ''
-var refreshToken: string = ''
+const userEmail = 'user1@gmail.com'
+const password = '12345'
+let accessToken = ''
+let refreshToken = ''
 
 
 beforeAll(async ()=>{

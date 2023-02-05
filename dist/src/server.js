@@ -38,6 +38,10 @@ const post_route_1 = __importDefault(require("./routes/post_route"));
 app.use('/post', post_route_1.default);
 const auth_route_1 = __importDefault(require("./routes/auth_route"));
 app.use('/auth', auth_route_1.default);
+const student_route_1 = __importDefault(require("./routes/student_route"));
+app.use('/student', student_route_1.default);
+const file_route_1 = __importDefault(require("./routes/file_route"));
+app.use('/file', file_route_1.default);
 //implementing swagger
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));

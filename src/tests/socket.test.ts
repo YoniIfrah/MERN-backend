@@ -14,7 +14,7 @@ const userPassword = "12345"
 const userEmail2 = "user2@gmail.com"
 const userPassword2 = "12345"
 
-var newPostId = ''
+let newPostId = ''
 const message = "hi... test 123"
 
 /**
@@ -24,6 +24,7 @@ const message = "hi... test 123"
  * @returns iterate the array of objects and checks if they value of the key exits then true else false
  */
 const hasString = (arr: { [key: string]: string }[], string: string, key?: string): boolean => {
+    // eslint-disable-next-line no-prototype-builtins
     return arr.some(obj => key ? obj.hasOwnProperty(key) && obj[key].includes(string) : Object.values(obj).some(value => value.includes(string)));
 };
 

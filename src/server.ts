@@ -42,6 +42,14 @@ app.use('/post',postRouter);
 import authRouter from './routes/auth_route'
 app.use('/auth',authRouter);
 
+import studentRouter from './routes/student_route'
+app.use('/student', studentRouter)
+
+import fileRouter from './routes/file_route'
+app.use('/file', fileRouter)
+
+
+
 //implementing swagger
 import swaggerUI from "swagger-ui-express"
 import swaggerJsDoc from "swagger-jsdoc"

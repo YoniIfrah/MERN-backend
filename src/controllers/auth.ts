@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken'
 /**
  * Helpers methods & variables
  */
-function sendError(res: Response, error: String) {
+function sendError(res: Response, error: string) {
     res.status(400).send({
         'err':error,
     })
