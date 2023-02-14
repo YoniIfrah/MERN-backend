@@ -34,6 +34,8 @@ db.once('open', () => console.log('connected to mongo'))
 
 //static pages
 app.use('/public',express.static('public'))
+app.use('/uploads',express.static('uploads'))
+
 
 
 import postRouter from './routes/post_route'
