@@ -11,6 +11,7 @@ const router = express.Router()
 import multer from 'multer'
 
 const base = 'http://192.168.0.117:3000'
+
 const storage = multer.diskStorage({
     destination: function (req: Request, file: unknown, cb) {
         cb(null, 'uploads/')

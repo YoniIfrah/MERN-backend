@@ -45,7 +45,24 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-    "email": "user1@gmail.com",
+    "email": "user2@gmail.com",
     "password": "12345"
 
+}
+###
+
+POST http://192.168.0.117:3000/auth/register
+Content-Type: application/json
+
+{
+    "email": "user2@gmail.com",
+    "password": "12345"
+}
+###
+
+GET http://192.168.0.117:3000/auth/logout
+Content-Type: application/json
+
+{
+    "headers": {"authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZWU5YWZiMWQxMGNhNTZlNmVkOTcxZSIsImlhdCI6MTY3NjU4MTYyN30._Lm2nbKm8ADMGbLBwcss5j7J6jo67rmplPoIMYRB8vs"},
 }

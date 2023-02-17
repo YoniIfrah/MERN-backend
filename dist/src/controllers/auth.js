@@ -23,6 +23,7 @@ function sendError(res, error) {
     });
 }
 function getTokenFromReq(req) {
+    //RETURN WITHOUT THE JWT STRING - ONLY THE REFRESH TOKEN
     const authHeader = req.headers['authorization'];
     if (authHeader == null)
         return null;
@@ -74,6 +75,7 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         console.log('Error:', error);
         sendError(res, 'fail checking user pw');
     }
+    console.log("register successfully");
 });
 /**
  **explain for login**
@@ -105,6 +107,8 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         yield user.save();
         // in the end of the block
+        console.log("login successfully");
+        console.log(tokens);
         res.status(200).send(tokens);
     }
     catch (err) {
@@ -143,8 +147,11 @@ const refresh = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
  */
 const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = getTokenFromReq(req);
-    if (refreshToken == null)
+    console.log(refreshToken, "refresh token FROM LOGOUTTT");
+    if (refreshToken == null) {
+        console.log("auth is missing");
         return sendError(res, 'authentication missing');
+    }
     try {
         const user = jsonwebtoken_1.default.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
         const userObj = yield user_model_1.default.findById(user.id);
@@ -157,6 +164,7 @@ const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         userObj.refresh_tokens.splice(userObj.refresh_tokens.indexOf(refreshToken), 1);
         yield userObj.save();
+        console.log("logout successfully");
         return res.status(200).send();
     }
     catch (err) {

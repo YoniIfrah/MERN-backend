@@ -12,9 +12,10 @@ function sendError(res: Response, error: string) {
     })
 }
 function getTokenFromReq(req:Request): string {
+    //RETURN WITHOUT THE JWT STRING - ONLY THE REFRESH TOKEN
     const authHeader = req.headers['authorization']
     if (authHeader == null) return null
-    return authHeader.split(' ')[1]
+    return authHeader.split(' ')[1] 
 }
 async function generateTokens(userId:string){
     const accessToken = await jwt.sign(
@@ -26,7 +27,7 @@ async function generateTokens(userId:string){
         {'id': userId},
         process.env.REFRESH_TOKEN_SECRET,
     )
-
+    
     return {'accessToken':accessToken, 'refreshToken':refreshToken}
 }
 type TokenInfo = {
@@ -73,6 +74,8 @@ const register = async (req:Request, res:Response) => {
         console.log('Error:', error)
         sendError(res, 'fail checking user pw')
     }
+    console.log("register successfully")
+
 } 
 
 /**
@@ -107,6 +110,8 @@ const login = async (req:Request, res:Response) => {
         await user.save()
 
         // in the end of the block
+        console.log("login successfully")
+        console.log(tokens)
         res.status(200).send(tokens)
     }
     catch(err){
@@ -151,7 +156,11 @@ const refresh = async (req:Request, res:Response) => {
  */
 const logout = async (req:Request, res:Response) => {
     const refreshToken = getTokenFromReq(req)
-    if (refreshToken == null) return sendError(res,'authentication missing')
+    console.log(refreshToken, "refresh token FROM LOGOUTTT")
+    if (refreshToken == null) {
+        console.log("auth is missing")
+        return sendError(res,'authentication missing')
+    }
 
     try{
         const user:TokenInfo = <TokenInfo>jwt.verify(refreshToken,process.env.REFRESH_TOKEN_SECRET)
@@ -166,6 +175,7 @@ const logout = async (req:Request, res:Response) => {
 
         userObj.refresh_tokens.splice(userObj.refresh_tokens.indexOf(refreshToken),1)
         await userObj.save()
+        console.log("logout successfully")
         return res.status(200).send()
     }catch(err){
         console.log(err)
