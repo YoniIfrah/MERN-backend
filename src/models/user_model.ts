@@ -3,7 +3,8 @@ import mongoose from 'mongoose'
 const userSchema = new mongoose.Schema({
     email:{
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     password:{
         type: String,
@@ -11,7 +12,10 @@ const userSchema = new mongoose.Schema({
     },
     refresh_tokens: {
         type: [String],
-    }
+    },
+    // ImgUrl: {
+    //     type: String
+    // }
 })
 
 export = mongoose.model('User', userSchema)

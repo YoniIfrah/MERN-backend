@@ -66,8 +66,10 @@ const register = async (req:Request, res:Response) => {
         const encryptedPwd = await bcrypt.hash(password, salt)
         let newUser = new User({
             'email': email,
-            'password': encryptedPwd
+            'password': encryptedPwd,
         })
+
+        
         newUser = await newUser.save()
         res.status(200).send(newUser)
     }catch(error){
@@ -108,11 +110,11 @@ const login = async (req:Request, res:Response) => {
             user.refresh_tokens.push(tokens.refreshToken)
         }
         await user.save()
-
+        const newObj = Object.assign(tokens, { email: email });//passed unit test
         // in the end of the block
         console.log("login successfully")
-        console.log(tokens)
-        res.status(200).send(tokens)
+        console.log(newObj)
+        res.status(200).send(newObj)
     }
     catch(err){
         console.log('Error:', err)

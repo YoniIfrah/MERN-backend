@@ -106,10 +106,11 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             user.refresh_tokens.push(tokens.refreshToken);
         }
         yield user.save();
+        const newObj = Object.assign(tokens, { email: email }); //passed unit test
         // in the end of the block
         console.log("login successfully");
-        console.log(tokens);
-        res.status(200).send(tokens);
+        console.log(newObj);
+        res.status(200).send(newObj);
     }
     catch (err) {
         console.log('Error:', err);
