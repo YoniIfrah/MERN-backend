@@ -6,6 +6,7 @@ import Post  from '../models/post_model'
 
 const userEmail = 'user1@gmail.com'
 const password = '12345'
+const newPassword = '123123'
 let accessToken = ''
 let refreshToken = ''
 
@@ -86,6 +87,15 @@ describe('Auth Tests', ()=>{
         
         response = await request(app).get('/post').set('Authorization', 'JWT ' + accessToken);
         expect(response.statusCode).toEqual(200)
+
+    })
+
+    test("change password", async () => {
+        const response = await request(app).put(`/auth/${userEmail}`).send({
+            'password':newPassword
+        })
+        expect(response.statusCode).toEqual(200)
+        expect(response.body.newPassword).toEqual(newPassword)
 
     })
 

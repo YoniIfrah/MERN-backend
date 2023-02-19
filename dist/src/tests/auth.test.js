@@ -19,6 +19,7 @@ const user_model_1 = __importDefault(require("../models/user_model"));
 const post_model_1 = __importDefault(require("../models/post_model"));
 const userEmail = 'user1@gmail.com';
 const password = '12345';
+const newPassword = '123123';
 let accessToken = '';
 let refreshToken = '';
 beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
@@ -86,6 +87,13 @@ describe('Auth Tests', () => {
         expect(refreshToken).not.toBeNull();
         response = yield (0, supertest_1.default)(server_1.default).get('/post').set('Authorization', 'JWT ' + accessToken);
         expect(response.statusCode).toEqual(200);
+    }));
+    test("change password", () => __awaiter(void 0, void 0, void 0, function* () {
+        const response = yield (0, supertest_1.default)(server_1.default).put(`/auth/${userEmail}`).send({
+            'password': newPassword
+        });
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.newPassword).toEqual(newPassword);
     }));
     test("Logout test", () => __awaiter(void 0, void 0, void 0, function* () {
         const response = yield (0, supertest_1.default)(server_1.default).get('/auth/logout').set('Authorization', 'JWT ' + refreshToken);

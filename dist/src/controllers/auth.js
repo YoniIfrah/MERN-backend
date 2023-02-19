@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const user_model_1 = __importDefault(require("../models/user_model"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -66,7 +67,7 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const encryptedPwd = yield bcrypt_1.default.hash(password, salt);
         let newUser = new user_model_1.default({
             'email': email,
-            'password': encryptedPwd
+            'password': encryptedPwd,
         });
         newUser = yield newUser.save();
         res.status(200).send(newUser);
@@ -188,5 +189,29 @@ const authenticaticatedMiddleware = (req, res, next) => __awaiter(void 0, void 0
         return sendError(res, 'validation failed token');
     }
 });
-module.exports = { login, refresh, register, logout, authenticaticatedMiddleware };
+const changePassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("change password called");
+    const email = req.params.email;
+    const password = req.body.password;
+    // res.status(200).send({"newPassword":password})
+    if (!email || !password) {
+        return sendError(res, 'please provide valid email/password');
+    }
+    try {
+        // eslint-disable-next-line prefer-const
+        let user = yield user_model_1.default.findOne({ 'email': email });
+        if (user == null) {
+            return sendError(res, 'invalid user');
+        }
+        const salt = yield bcrypt_1.default.genSalt(10);
+        const encryptedPwd = yield bcrypt_1.default.hash(password, salt);
+        const result = yield user_model_1.default.updateOne({ email: email }, { $set: { password: encryptedPwd } });
+        console.log(`Updated ${result.modifiedCount} user(s).`);
+        res.status(200).send({ "newPassword": password });
+    }
+    catch (error) {
+        console.log('Error at changePassword:', error);
+    }
+});
+module.exports = { login, refresh, register, logout, authenticaticatedMiddleware, changePassword };
 //# sourceMappingURL=auth.js.map

@@ -15,7 +15,11 @@ const userSchema = new mongoose_1.default.Schema({
     },
     refresh_tokens: {
         type: [String],
-    }
+    },
+    // ImgUrl: {
+    //     type: String,
+    //     required: true
+    // }
 });
 module.exports = mongoose_1.default.model('User', userSchema);
 //# sourceMappingURL=user_model.js.map

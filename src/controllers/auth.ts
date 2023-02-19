@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import User from '../models/user_model'
 import { NextFunction, Request, Response } from 'express'
 import bcrypt from 'bcrypt'; 
 import jwt from 'jsonwebtoken'
+
 
 /**
  * Helpers methods & variables
@@ -69,7 +71,7 @@ const register = async (req:Request, res:Response) => {
             'password': encryptedPwd,
         })
 
-        
+
         newUser = await newUser.save()
         res.status(200).send(newUser)
     }catch(error){
@@ -200,4 +202,34 @@ const authenticaticatedMiddleware = async (req:Request, res:Response, next:NextF
     }
 }
 
-export = {login, refresh, register, logout, authenticaticatedMiddleware}
+const changePassword = async (req:Request, res:Response) => {
+    console.log("change password called")
+    const email = req.params.email;
+    const password = req.body.password
+    // res.status(200).send({"newPassword":password})
+
+    if (!email || !password){
+        return sendError(res, 'please provide valid email/password')
+    }
+    try {
+        // eslint-disable-next-line prefer-const
+        let user = await User.findOne({'email': email})
+        if(user == null){
+            return sendError(res, 'invalid user')
+        }
+        const salt = await bcrypt.genSalt(10)
+        const encryptedPwd = await bcrypt.hash(password, salt)
+        const result = await User.updateOne(
+            {email: email}, 
+            { $set: { password: encryptedPwd } }
+        )
+        console.log(`Updated ${result.modifiedCount} user(s).`);
+
+        res.status(200).send({"newPassword":password})
+
+    } catch (error) {
+        console.log('Error at changePassword:', error)
+    }
+}
+
+export = {login, refresh, register, logout, authenticaticatedMiddleware, changePassword}

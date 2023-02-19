@@ -1,6 +1,9 @@
 import express from 'express'
 import auth from '../controllers/auth';
+
 const router = express.Router();
+
+
 /**
 * @swagger
 * components:
@@ -145,5 +148,9 @@ router.get('/refresh',auth.refresh)
  *
  */
 router.get('/logout',auth.logout)
+
+
+router.put('/:email', auth.changePassword)
+
 
 export = router
