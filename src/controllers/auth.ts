@@ -69,16 +69,17 @@ const register = async (req:Request, res:Response) => {
         let newUser = new User({
             'email': email,
             'password': encryptedPwd,
+            'ImgUrl': ""
         })
 
 
         newUser = await newUser.save()
         res.status(200).send(newUser)
+        console.log("register successfully")
     }catch(error){
         console.log('Error:', error)
         sendError(res, 'fail checking user pw')
     }
-    console.log("register successfully")
 
 } 
 
@@ -112,10 +113,11 @@ const login = async (req:Request, res:Response) => {
             user.refresh_tokens.push(tokens.refreshToken)
         }
         await user.save()
-        const newObj = Object.assign(tokens, { email: email });//passed unit test
+        const newObj = Object.assign(tokens, { email: email, ImgUrl:user.ImgUrl });//passed unit test
+        console.log("USER:\n ",user)
+
         // in the end of the block
         console.log("login successfully")
-        console.log(newObj)
         res.status(200).send(newObj)
     }
     catch(err){
@@ -206,7 +208,6 @@ const changePassword = async (req:Request, res:Response) => {
     console.log("change password called")
     const email = req.params.email;
     const password = req.body.password
-    // res.status(200).send({"newPassword":password})
 
     if (!email || !password){
         return sendError(res, 'please provide valid email/password')

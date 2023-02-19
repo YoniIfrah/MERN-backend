@@ -25,4 +25,16 @@ describe("File Tests", () => {
             expect(response.statusCode).toEqual(200);
         }
     })
+
+    test("update file", async () => {
+
+        const userEmail = 'user1@gmail.com'
+        const filePath = `${__dirname}/ava.png`;
+        const rs = await fs.exists(filePath)
+        if (rs) {
+            const response = await request(app)
+                .put(`/file/file/${userEmail}`).attach('file', filePath)
+            expect(response.statusCode).toEqual(200);
+        }
+    })
 })

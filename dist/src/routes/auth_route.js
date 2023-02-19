@@ -140,7 +140,6 @@ router.get('/refresh', auth_1.default.refresh);
  *
  */
 router.get('/logout', auth_1.default.logout);
-//NEED TO FIX THE REQUEST
 router.put('/:email', auth_1.default.changePassword);
 module.exports = router;
 //# sourceMappingURL=auth_route.js.map

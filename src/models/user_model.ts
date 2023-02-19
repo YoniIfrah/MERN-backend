@@ -13,10 +13,9 @@ const userSchema = new mongoose.Schema({
     refresh_tokens: {
         type: [String],
     },
-    // ImgUrl: {
-    //     type: String,
-    //     required: true
-    // }
+    ImgUrl: {
+        type: String,
+    }
 })
 
 export = mongoose.model('User', userSchema)

@@ -68,15 +68,16 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         let newUser = new user_model_1.default({
             'email': email,
             'password': encryptedPwd,
+            'ImgUrl': ""
         });
         newUser = yield newUser.save();
         res.status(200).send(newUser);
+        console.log("register successfully");
     }
     catch (error) {
         console.log('Error:', error);
         sendError(res, 'fail checking user pw');
     }
-    console.log("register successfully");
 });
 /**
  **explain for login**
@@ -107,10 +108,10 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             user.refresh_tokens.push(tokens.refreshToken);
         }
         yield user.save();
-        const newObj = Object.assign(tokens, { email: email }); //passed unit test
+        const newObj = Object.assign(tokens, { email: email, ImgUrl: user.ImgUrl }); //passed unit test
+        console.log("USER: ", user);
         // in the end of the block
         console.log("login successfully");
-        console.log(newObj);
         res.status(200).send(newObj);
     }
     catch (err) {
@@ -193,7 +194,6 @@ const changePassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
     console.log("change password called");
     const email = req.params.email;
     const password = req.body.password;
-    // res.status(200).send({"newPassword":password})
     if (!email || !password) {
         return sendError(res, 'please provide valid email/password');
     }

@@ -34,5 +34,15 @@ describe("File Tests", () => {
             expect(response.statusCode).toEqual(200);
         }
     }));
+    test("update file", () => __awaiter(void 0, void 0, void 0, function* () {
+        const userEmail = 'user1@gmail.com';
+        const filePath = `${__dirname}/ava.png`;
+        const rs = yield fs_1.default.exists(filePath);
+        if (rs) {
+            const response = yield (0, supertest_1.default)(server_1.default)
+                .put(`/file/file/${userEmail}`).attach('file', filePath);
+            expect(response.statusCode).toEqual(200);
+        }
+    }));
 });
 //# sourceMappingURL=file.test.js.map
