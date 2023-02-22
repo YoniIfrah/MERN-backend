@@ -101,5 +101,6 @@ router.get('/:id', student_1.default.getStudentById);
  *
  */
 router.post('/', student_1.default.addNewStudent);
+router.get('/email/:email', student_1.default.getStudentsByEmail);
 module.exports = router;
 //# sourceMappingURL=student_route.js.map

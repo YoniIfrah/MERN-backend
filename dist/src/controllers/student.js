@@ -24,7 +24,7 @@ const getAllStudents = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 const getStudentById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.params.id);
+    // console.log(req.params.id)
     try {
         const students = yield student_model_1.default.findById(req.params.id);
         res.status(200).send(students);
@@ -36,7 +36,7 @@ const getStudentById = (req, res) => __awaiter(void 0, void 0, void 0, function*
 const addNewStudent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(req.body);
     const student = new student_model_1.default({
-        _id: req.body._id,
+        email: req.body.email,
         name: req.body.name,
         avatarUrl: req.body.avatarUrl,
     });
@@ -50,5 +50,17 @@ const addNewStudent = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.status(400).send({ 'error': 'fail adding new post to db' });
     }
 });
-module.exports = { getAllStudents, getStudentById, addNewStudent };
+const getStudentsByEmail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const email = req.params.email;
+    console.log(email);
+    try {
+        const studentsByEmail = yield student_model_1.default.find({ email: email });
+        console.log("studentsByEmail  ", studentsByEmail);
+        res.status(200).send(studentsByEmail);
+    }
+    catch (err) {
+        res.status(400).send({ 'error': "fail to get posts from db by email" });
+    }
+});
+module.exports = { getAllStudents, getStudentById, addNewStudent, getStudentsByEmail };
 //# sourceMappingURL=student.js.map

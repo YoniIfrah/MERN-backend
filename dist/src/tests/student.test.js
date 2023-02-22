@@ -17,6 +17,7 @@ const server_1 = __importDefault(require("../server"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const student_model_1 = __importDefault(require("../models/student_model"));
 let newStudenId = "";
+const email = "oren@gmail.com";
 beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
     yield student_model_1.default.remove(); //{ 'id: ': newStudenId })
     console.log('beforeAll');
@@ -29,7 +30,7 @@ describe("Student Tests", () => {
     test("add new student", () => __awaiter(void 0, void 0, void 0, function* () {
         const response = yield (0, supertest_1.default)(server_1.default).post('/student')
             .send({
-            "_id": 1234,
+            "email": email,
             "name": "Oren",
             "avatarUrl": "www.localhost:3000/oren.jpg"
         });
@@ -43,6 +44,23 @@ describe("Student Tests", () => {
     }));
     test("get student by id", () => __awaiter(void 0, void 0, void 0, function* () {
         const response = yield (0, supertest_1.default)(server_1.default).get('/student/' + newStudenId);
+        expect(response.statusCode).toEqual(200);
+    }));
+    test("get all students by email", () => __awaiter(void 0, void 0, void 0, function* () {
+        //adding 2 students
+        let response = yield (0, supertest_1.default)(server_1.default).post('/student')
+            .send({
+            "email": email,
+            "name": "Oren2",
+            "avatarUrl": "www.localhost:3000/oren.jpg"
+        });
+        response = yield (0, supertest_1.default)(server_1.default).post('/student')
+            .send({
+            "email": email + "2",
+            "name": "notOren",
+            "avatarUrl": "www.localhost:3000/oren.jpg"
+        });
+        response = yield (0, supertest_1.default)(server_1.default).get('/student/email/' + email);
         expect(response.statusCode).toEqual(200);
     }));
 });

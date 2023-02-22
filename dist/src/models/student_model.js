@@ -7,7 +7,7 @@ const studentSchema = new mongoose_1.default.Schema({
     /*
     with _id the object in the DB and the object in the code will have the same id
     */
-    _id: {
+    email: {
         type: String,
         required: true
     },

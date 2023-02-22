@@ -20,7 +20,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 const multer_1 = __importDefault(require("multer"));
-const base = 'http://192.168.0.117:3000';
+// const base = 'http://192.168.0.117:3000'//home
+const base = 'http://10.200.201.33:3000'; //sce
 const storage = multer_1.default.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/');
@@ -39,6 +40,7 @@ router.post('/file', upload.single("file"), function (req, res) {
 const user_model_1 = __importDefault(require("../models/user_model"));
 router.put(`/file/:email`, upload.single("file"), function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
+        //passed unit test
         const email = req.params.email;
         const ImgUrl = req.body.ImgUrl;
         console.log("update file");

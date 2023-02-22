@@ -4,7 +4,7 @@ import mongoose from 'mongoose'
 import Student from '../models/student_model'
 
 let newStudenId = ""
-
+const email = "oren@gmail.com"
 beforeAll(async () => {
     await Student.remove()//{ 'id: ': newStudenId })
     console.log('beforeAll')
@@ -19,7 +19,7 @@ describe("Student Tests", () => {
     test("add new student", async () => {
         const response = await request(app).post('/student')
             .send({
-                "_id": 1234,
+                "email": email,
                 "name": "Oren",
                 "avatarUrl": "www.localhost:3000/oren.jpg"
             })
@@ -37,4 +37,23 @@ describe("Student Tests", () => {
         const response = await request(app).get('/student/' + newStudenId)
         expect(response.statusCode).toEqual(200)
     })
+
+    test("get all students by email", async () => {
+        //adding 2 students
+        let response = await request(app).post('/student')
+        .send({
+            "email": email,
+            "name": "Oren2",
+            "avatarUrl": "www.localhost:3000/oren.jpg"
+        })        
+        response = await request(app).post('/student')
+        .send({
+            "email": email+"2",
+            "name": "notOren",
+            "avatarUrl": "www.localhost:3000/oren.jpg"
+        })
+        response = await request(app).get('/student/email/' + email)
+        expect(response.statusCode).toEqual(200)
+    })
+    
 })

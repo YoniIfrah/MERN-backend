@@ -17,7 +17,7 @@ const getAllStudents = async (req: Request, res: Response) => {
 }
 
 const getStudentById = async (req: Request, res: Response) => {
-    console.log(req.params.id)
+    // console.log(req.params.id)
     try {
         const students = await Student.findById(req.params.id)
         res.status(200).send(students)
@@ -31,7 +31,7 @@ const addNewStudent = async (req: Request, res: Response) => {
     console.log(req.body)
 
     const student = new Student({
-        _id: req.body._id,
+        email: req.body.email,
         name: req.body.name,
         avatarUrl: req.body.avatarUrl,
     })
@@ -46,5 +46,15 @@ const addNewStudent = async (req: Request, res: Response) => {
     }
 }
 
+const getStudentsByEmail = async (req: Request, res: Response) => {
+    const email = req.params.email
+    try {
+        const studentsByEmail = await Student.find({email:email})
+        console.log("studentsByEmail  ",studentsByEmail)
+        res.status(200).send(studentsByEmail)
+    } catch (err) {
+        res.status(400).send({ 'error': "fail to get posts from db by email" })
+    }
+}
 
-export = { getAllStudents, getStudentById, addNewStudent }
+export = { getAllStudents, getStudentById, addNewStudent, getStudentsByEmail}

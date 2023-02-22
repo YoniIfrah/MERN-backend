@@ -103,5 +103,8 @@ router.get('/:id', student.getStudentById)
  */
 router.post('/', student.addNewStudent)
 
+router.get('/email/:email', student.getStudentsByEmail)
+
+
 
 export = router
