@@ -36,11 +36,9 @@ router.post('/file', upload.single("file"), function (req, res) {
     console.log("router.post(/file: " + base + '/' + req.file.path);
     res.status(200).send({ url: base + '/' + req.file.path });
 });
-//NEED TO FIX THIS
 const user_model_1 = __importDefault(require("../models/user_model"));
 router.put(`/file/:email`, upload.single("file"), function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        // console.log("router.put(/file/:email: " + base +'/'+ req.file.path)
         const email = req.params.email;
         const ImgUrl = req.body.ImgUrl;
         console.log("update file");
@@ -52,7 +50,6 @@ router.put(`/file/:email`, upload.single("file"), function (req, res) {
             }
             const result = yield user_model_1.default.updateOne({ email: email }, { $set: { ImgUrl: ImgUrl } });
             console.log(`Updated ${result.modifiedCount} user(s).`);
-            // res.status(200).send({ url: base+'/'+ req.file.path })
             res.status(200).send(ImgUrl);
         }
         catch (error) {

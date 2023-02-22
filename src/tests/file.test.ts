@@ -26,7 +26,7 @@ describe("File Tests", () => {
         }
     })
 
-    test("update file", async () => {
+    test("update file", async () => {//passed
 
         const userEmail = 'user1@gmail.com'
         const filePath = `${__dirname}/ava.png`;

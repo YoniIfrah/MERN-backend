@@ -108,8 +108,9 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             user.refresh_tokens.push(tokens.refreshToken);
         }
         yield user.save();
+        //every time that authContext change UserInfo change, need to change here as well
         const newObj = Object.assign(tokens, { email: email, ImgUrl: user.ImgUrl }); //passed unit test
-        console.log("USER: ", user);
+        console.log("USER:\n ", user);
         // in the end of the block
         console.log("login successfully");
         res.status(200).send(newObj);
