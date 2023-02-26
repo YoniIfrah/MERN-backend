@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+const mongodb_1 = require("mongodb");
 const student_model_1 = __importDefault(require("../models/student_model"));
 const getAllStudents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('getAllStudents');
@@ -24,12 +25,22 @@ const getAllStudents = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 const getStudentById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log(req.params.id)
+    console.log('getStudentById()');
+    console.log(req.params.id);
+    let objectId = null;
     try {
-        const students = yield student_model_1.default.findById(req.params.id);
+        objectId = new mongodb_1.ObjectId(req.params.id);
+        console.log(objectId);
+    }
+    catch (err) {
+        console.error('Invalid ObjectID:', err.message);
+    }
+    try {
+        const students = yield student_model_1.default.findOne({ _id: objectId });
         res.status(200).send(students);
     }
     catch (err) {
+        console.log(err.message);
         res.status(400).send({ 'error': "fail to get posts from db" });
     }
 });
@@ -51,8 +62,8 @@ const addNewStudent = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 const getStudentsByEmail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('getStudentsByEmail()');
     const email = req.params.email;
-    console.log(email);
     try {
         const studentsByEmail = yield student_model_1.default.find({ email: email });
         console.log("studentsByEmail  ", studentsByEmail);

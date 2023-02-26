@@ -1,8 +1,7 @@
 
+import {ObjectId} from 'mongodb'
 import Student from '../models/student_model'
 import { Request, Response } from 'express'
-
-
 
 const getAllStudents = async (req: Request, res: Response) => {
     console.log('getAllStudents')
@@ -17,11 +16,20 @@ const getAllStudents = async (req: Request, res: Response) => {
 }
 
 const getStudentById = async (req: Request, res: Response) => {
-    // console.log(req.params.id)
+    console.log('getStudentById()')
+    console.log(req.params.id)
+    let objectId:  ObjectId | null = null;
     try {
-        const students = await Student.findById(req.params.id)
+      objectId = new ObjectId(req.params.id);
+      console.log(objectId)
+    } catch (err) {
+      console.error('Invalid ObjectID:', err.message);
+    }
+    try {
+        const students = await Student.findOne({ _id: objectId })
         res.status(200).send(students)
     } catch (err) {
+        console.log(err.message)
         res.status(400).send({ 'error': "fail to get posts from db" })
     }
 }
@@ -47,6 +55,7 @@ const addNewStudent = async (req: Request, res: Response) => {
 }
 
 const getStudentsByEmail = async (req: Request, res: Response) => {
+    console.log('getStudentsByEmail()')
     const email = req.params.email
     try {
         const studentsByEmail = await Student.find({email:email})

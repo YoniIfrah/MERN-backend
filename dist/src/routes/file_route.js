@@ -21,7 +21,8 @@ const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 const multer_1 = __importDefault(require("multer"));
 // const base = 'http://192.168.0.117:3000'//home
-const base = 'http://10.200.201.33:3000'; //sce
+const base = 'http://10.200.201.204:3000'; //sce
+// const base = 'http://10.0.0.28:3000'//zamir
 const storage = multer_1.default.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/');
