@@ -55,7 +55,10 @@ describe("Student Tests", () => {
         response = await request(app).get('/student/email/' + email)
         expect(response.statusCode).toEqual(200)
     })
-    
+    test("delete student by id", async () => {
+        const response = await request(app).delete('/student/delete/' + newStudenId)
+        expect(response.statusCode).toEqual(200)
+    })
     //need to add delete and put methods
     
     

@@ -13,6 +13,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 const mongodb_1 = require("mongodb");
 const student_model_1 = __importDefault(require("../models/student_model"));
+/**
+ * takes id and convert it to Object ID for mongo fb
+ * @param id string
+ * @returns
+ */
+const idToObjectId = (id) => {
+    let objectId = null;
+    try {
+        objectId = new mongodb_1.ObjectId(id);
+        console.log(objectId);
+    }
+    catch (err) {
+        console.error('Invalid ObjectID:', err.message);
+    }
+    return objectId;
+};
+//====================================================
 const getAllStudents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('getAllStudents');
     try {
@@ -73,5 +90,17 @@ const getStudentsByEmail = (req, res) => __awaiter(void 0, void 0, void 0, funct
         res.status(400).send({ 'error': "fail to get posts from db by email" });
     }
 });
-module.exports = { getAllStudents, getStudentById, addNewStudent, getStudentsByEmail };
+const deleteById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('deleteById()');
+    console.log(req.params.id);
+    const objectId = idToObjectId(req.params.id);
+    try {
+        const del = yield student_model_1.default.findByIdAndDelete({ _id: objectId });
+        res.status(200).send(del);
+    }
+    catch (error) {
+        res.status(400).send({ 'error': "fail to delete post from db by ID" });
+    }
+});
+module.exports = { getAllStudents, getStudentById, addNewStudent, getStudentsByEmail, deleteById };
 //# sourceMappingURL=student.js.map

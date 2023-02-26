@@ -3,6 +3,22 @@ import {ObjectId} from 'mongodb'
 import Student from '../models/student_model'
 import { Request, Response } from 'express'
 
+/**
+ * takes id and convert it to Object ID for mongo fb
+ * @param id string
+ * @returns 
+ */
+const idToObjectId = (id:string) =>{
+    let objectId:  ObjectId | null = null;
+    try {
+      objectId = new ObjectId(id);
+      console.log(objectId)
+    } catch (err) {
+      console.error('Invalid ObjectID:', err.message);
+    }
+    return objectId
+}
+//====================================================
 const getAllStudents = async (req: Request, res: Response) => {
     console.log('getAllStudents')
 
@@ -66,4 +82,16 @@ const getStudentsByEmail = async (req: Request, res: Response) => {
     }
 }
 
-export = { getAllStudents, getStudentById, addNewStudent, getStudentsByEmail}
+
+const deleteById = async (req: Request, res: Response) => {
+    console.log('deleteById()')
+    console.log(req.params.id)
+    const objectId:ObjectId | null = idToObjectId(req.params.id)
+    try {
+        const del = await Student.findByIdAndDelete({ _id: objectId })
+        res.status(200).send(del)
+    }catch (error) {
+        res.status(400).send({ 'error': "fail to delete post from db by ID" })
+    }
+}
+export = { getAllStudents, getStudentById, addNewStudent, getStudentsByEmail, deleteById}
