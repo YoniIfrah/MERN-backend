@@ -59,7 +59,11 @@ describe("Student Tests", () => {
         const response = await request(app).delete('/student/delete/' + newStudenId)
         expect(response.statusCode).toEqual(200)
     })
-    //need to add delete and put methods
-    
-    
+    test("update student by id", async () => {
+        const response = await request(app).put('/student/update/' + newStudenId).send({
+            "text":"new text after put request"
+        })
+        expect(response.statusCode).toEqual(200)
+    })
+        
 })

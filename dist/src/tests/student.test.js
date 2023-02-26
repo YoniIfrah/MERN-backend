@@ -67,6 +67,11 @@ describe("Student Tests", () => {
         const response = yield (0, supertest_1.default)(server_1.default).delete('/student/delete/' + newStudenId);
         expect(response.statusCode).toEqual(200);
     }));
-    //need to add delete and put methods
+    test("update student by id", () => __awaiter(void 0, void 0, void 0, function* () {
+        const response = yield (0, supertest_1.default)(server_1.default).put('/student/update/' + newStudenId).send({
+            "text": "new text after put request"
+        });
+        expect(response.statusCode).toEqual(200);
+    }));
 });
 //# sourceMappingURL=student.test.js.map

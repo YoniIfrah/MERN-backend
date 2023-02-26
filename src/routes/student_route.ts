@@ -107,6 +107,9 @@ router.get('/email/:email', student.getStudentsByEmail)
 
 router.delete('/delete/:id', student.deleteById)
 
+router.put('/update/:id', student.putById)
+
+
 
 
 export = router

@@ -102,5 +102,25 @@ const deleteById = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(400).send({ 'error': "fail to delete post from db by ID" });
     }
 });
-module.exports = { getAllStudents, getStudentById, addNewStudent, getStudentsByEmail, deleteById };
+const putById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('deleteById()');
+    console.log(req.params.id);
+    const text = req.body.text;
+    const objectId = idToObjectId(req.params.id);
+    try {
+        const student = yield student_model_1.default.findOne({ _id: objectId });
+        console.log('user student/post');
+        if (student == null) {
+            console.log('invalid user');
+        }
+        const result = yield student_model_1.default.updateOne({ _id: objectId }, { $set: { name: text } });
+        console.log(`Updated ${result.modifiedCount} student(s).`);
+        res.status(200).send(student);
+    }
+    catch (err) {
+        console.log(err.message);
+        res.status(400).send({ 'error': "fail to change name to student in db" });
+    }
+});
+module.exports = { getAllStudents, getStudentById, addNewStudent, getStudentsByEmail, deleteById, putById };
 //# sourceMappingURL=student.js.map

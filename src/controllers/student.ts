@@ -94,4 +94,31 @@ const deleteById = async (req: Request, res: Response) => {
         res.status(400).send({ 'error': "fail to delete post from db by ID" })
     }
 }
-export = { getAllStudents, getStudentById, addNewStudent, getStudentsByEmail, deleteById}
+
+const putById = async (req: Request, res: Response) => {
+    console.log('deleteById()')
+    console.log(req.params.id)
+    const text = req.body.text;
+
+    const objectId:ObjectId | null = idToObjectId(req.params.id)
+    try {
+        const student = await Student.findOne({ _id: objectId })
+        console.log('user student/post')
+        if(student == null){
+            console.log('invalid user')
+        }
+        const result = await Student.updateOne(
+            { _id: objectId },
+            { $set: { name: text } }
+        )
+        console.log(`Updated ${result.modifiedCount} student(s).`);
+
+        res.status(200).send(student)
+    } catch (err) {
+        console.log(err.message)
+        res.status(400).send({ 'error': "fail to change name to student in db" })
+    }
+
+}
+
+export = { getAllStudents, getStudentById, addNewStudent, getStudentsByEmail, deleteById, putById}
