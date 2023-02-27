@@ -104,5 +104,6 @@ router.post('/', student_1.default.addNewStudent);
 router.get('/email/:email', student_1.default.getStudentsByEmail);
 router.delete('/delete/:id', student_1.default.deleteById);
 router.put('/update/:id', student_1.default.putById);
+router.put("/updatedImg/:id", student_1.default.updatedImg);
 module.exports = router;
 //# sourceMappingURL=student_route.js.map

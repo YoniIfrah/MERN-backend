@@ -104,5 +104,28 @@ const putById = async (req: Request, res: Response) => {
     }
 
 }
+ const updatedImg = async (req: Request, res: Response) => {
+    console.log('updatedImg()')
+    console.log(req.params.id)
+    const image = req.body.image;
+    console.log("image = ",image)
 
-export = { getAllStudents, getStudentById, addNewStudent, getStudentsByEmail, deleteById, putById}
+    const objectId:ObjectId | null = idToObjectId(req.params.id)
+    try {
+        const result = await Student.updateOne(
+            { _id: objectId },
+            { $set: { avatarUrl: image } }
+        )
+        console.log(`Updated ${result.modifiedCount} student(s).`);
+        const student = await Student.findOne({ _id: objectId })
+        if(student == null){
+            console.log('invalid user')
+        }
+        res.status(200).send(student)
+    } catch (err) {
+        console.log(err.message)
+        res.status(400).send({ 'error': "fail to change name to student in db" })
+    }
+}
+
+export = { updatedImg, getAllStudents, getStudentById, addNewStudent, getStudentsByEmail, deleteById, putById}

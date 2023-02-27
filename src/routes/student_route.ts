@@ -109,6 +109,8 @@ router.delete('/delete/:id', student.deleteById)
 
 router.put('/update/:id', student.putById)
 
+router.put("/updatedImg/:id", student.updatedImg)
+
 
 
 

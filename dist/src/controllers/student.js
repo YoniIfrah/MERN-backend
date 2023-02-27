@@ -90,22 +90,14 @@ const putById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('deleteById()');
     console.log(req.params.id);
     const text = req.body.text;
-    console.log(text);
+    console.log("text = ", text);
     const objectId = (0, helpers_1.idToObjectId)(req.params.id);
     try {
-        // const student = await Student.findOne({ _id: objectId })
-        // console.log('user student/post')
-        // if(student == null){
-        //     console.log('invalid user')
-        // }
         const result = yield student_model_1.default.updateOne({ _id: objectId }, { $set: { name: text } });
         console.log(`Updated ${result.modifiedCount} student(s).`);
         const student = yield student_model_1.default.findOne({ _id: objectId });
         if (student == null) {
             console.log('invalid user');
-        }
-        else {
-            console.log("student = ", student);
         }
         res.status(200).send(student);
     }
@@ -114,5 +106,25 @@ const putById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(400).send({ 'error': "fail to change name to student in db" });
     }
 });
-module.exports = { getAllStudents, getStudentById, addNewStudent, getStudentsByEmail, deleteById, putById };
+const updatedImg = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('updatedImg()');
+    console.log(req.params.id);
+    const image = req.body.image;
+    console.log("image = ", image);
+    const objectId = (0, helpers_1.idToObjectId)(req.params.id);
+    try {
+        const result = yield student_model_1.default.updateOne({ _id: objectId }, { $set: { avatarUrl: image } });
+        console.log(`Updated ${result.modifiedCount} student(s).`);
+        const student = yield student_model_1.default.findOne({ _id: objectId });
+        if (student == null) {
+            console.log('invalid user');
+        }
+        res.status(200).send(student);
+    }
+    catch (err) {
+        console.log(err.message);
+        res.status(400).send({ 'error': "fail to change name to student in db" });
+    }
+});
+module.exports = { updatedImg, getAllStudents, getStudentById, addNewStudent, getStudentsByEmail, deleteById, putById };
 //# sourceMappingURL=student.js.map

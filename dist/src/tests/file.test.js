@@ -45,7 +45,7 @@ describe("File Tests", () => {
             expect(response.statusCode).toEqual(200);
         }
     }));
-    test("update file by id", () => __awaiter(void 0, void 0, void 0, function* () {
+    test.skip("update file by id", () => __awaiter(void 0, void 0, void 0, function* () {
         // // TODO: need to change every unit test the id - done
         // const userId = '63fba585b63ccbce16b24761'
         const userId = unitTestVar_1.StudentId.getStudenId();

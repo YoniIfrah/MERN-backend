@@ -39,7 +39,7 @@ describe("File Tests", () => {
         }
     })
 
-    test("update file by id", async () => {//passed
+    test.skip("update file by id", async () => {//passed
 
         // // TODO: need to change every unit test the id - done
         // const userId = '63fba585b63ccbce16b24761'

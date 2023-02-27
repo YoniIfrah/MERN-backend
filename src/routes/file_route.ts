@@ -15,6 +15,8 @@ import multer from 'multer'
 
 // const base = 'http://192.168.0.117:3000'//home
 const base = 'http://10.200.201.233:3000'//sce
+// const base = 'http://192.168.246.174:3000' //cell phone
+
 // const base = 'http://10.0.0.28:3000'//zamir
 
 
@@ -67,8 +69,8 @@ router.put(`/file/:email`, upload.single("file"), async function (req: Request, 
 });
 import Student from '../models/student_model'
 router.put(`/file/id/:id`, upload.single("file"), async function (req: Request, res: Response) {
-    const avatarUrl = req.body.avatarUrl;
-    console.log("update file")
+    const avatarUrl = req.body.ImgUrl;
+    console.log("updating file to ",req.params.id)
 
     try {
         const objectId: ObjectId | null = idToObjectId(req.params.id)
