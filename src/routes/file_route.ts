@@ -6,12 +6,15 @@
 */
 
 import express, { Request, Response } from 'express'
+import { idToObjectId } from '../services/helpers'
+import {ObjectId} from 'mongodb'
+
 const router = express.Router()
 
 import multer from 'multer'
 
 // const base = 'http://192.168.0.117:3000'//home
-const base = 'http://10.200.201.204:3000'//sce
+const base = 'http://10.200.201.233:3000'//sce
 // const base = 'http://10.0.0.28:3000'//zamir
 
 
@@ -45,10 +48,10 @@ router.put(`/file/:email`, upload.single("file"), async function (req: Request, 
 
     try {
         const user = await User.findOne({'email': email})
-        console.log('user found')
         if(user == null){
             console.log('invalid user')
         }
+        console.log('user found')
         const result = await User.updateOne(
             {email: email}, 
             { $set: { ImgUrl: ImgUrl } }
@@ -56,6 +59,36 @@ router.put(`/file/:email`, upload.single("file"), async function (req: Request, 
             console.log(`Updated ${result.modifiedCount} user(s).`);
 
             res.status(200).send(ImgUrl)
+        } catch (error) {
+
+            console.log("file put method err:", error)
+            res.status(400)             
+        }
+});
+import Student from '../models/student_model'
+router.put(`/file/id/:id`, upload.single("file"), async function (req: Request, res: Response) {
+    const avatarUrl = req.body.avatarUrl;
+    console.log("update file")
+
+    try {
+        const objectId: ObjectId | null = idToObjectId(req.params.id)
+
+        let student = await Student.findOne({ _id: objectId })
+        // console.log("student = ",student)
+        if(student == null){
+            console.log('invalid id')
+        } else{
+            console.log('student found')
+        }
+
+        const result = await Student.updateOne(
+            { _id: objectId },
+            { $set: { avatarUrl: avatarUrl } }
+        )
+        console.log(`Updated ${result.modifiedCount} students(s).`);
+        student = await Student.findOne({ _id: objectId })
+        res.status(200).send({"avatarUrl":student.avatarUrl})
+
         } catch (error) {
 
             console.log("file put method err:", error)

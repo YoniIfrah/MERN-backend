@@ -16,6 +16,7 @@ const supertest_1 = __importDefault(require("supertest"));
 const server_1 = __importDefault(require("../server"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const fs_1 = __importDefault(require("mz/fs"));
+const unitTestVar_1 = require("../services/unitTestVar");
 beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
     console.log('beforeAll');
 }));
@@ -34,7 +35,7 @@ describe("File Tests", () => {
             expect(response.statusCode).toEqual(200);
         }
     }));
-    test("update file", () => __awaiter(void 0, void 0, void 0, function* () {
+    test("update file by email", () => __awaiter(void 0, void 0, void 0, function* () {
         const userEmail = 'user1@gmail.com';
         const filePath = `${__dirname}/ava.png`;
         const rs = yield fs_1.default.exists(filePath);
@@ -42,6 +43,19 @@ describe("File Tests", () => {
             const response = yield (0, supertest_1.default)(server_1.default)
                 .put(`/file/file/${userEmail}`).attach('file', filePath);
             expect(response.statusCode).toEqual(200);
+        }
+    }));
+    test("update file by id", () => __awaiter(void 0, void 0, void 0, function* () {
+        // // TODO: need to change every unit test the id - done
+        // const userId = '63fba585b63ccbce16b24761'
+        const userId = unitTestVar_1.StudentId.getStudenId();
+        const filePath = `randomPath`;
+        const rs = yield fs_1.default.exists(filePath);
+        if (rs) {
+            const response = yield (0, supertest_1.default)(server_1.default)
+                .put(`/file/file/id/${userId}`).attach('file', filePath);
+            expect(response.statusCode).toEqual(200);
+            expect(response.body.avatarUrl).toEqual(filePath);
         }
     }));
 });

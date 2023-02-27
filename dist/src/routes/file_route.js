@@ -18,10 +18,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 const express_1 = __importDefault(require("express"));
+const helpers_1 = require("../services/helpers");
 const router = express_1.default.Router();
 const multer_1 = __importDefault(require("multer"));
 // const base = 'http://192.168.0.117:3000'//home
-const base = 'http://10.200.201.204:3000'; //sce
+const base = 'http://10.200.201.233:3000'; //sce
 // const base = 'http://10.0.0.28:3000'//zamir
 const storage = multer_1.default.diskStorage({
     destination: function (req, file, cb) {
@@ -47,13 +48,39 @@ router.put(`/file/:email`, upload.single("file"), function (req, res) {
         console.log("update file");
         try {
             const user = yield user_model_1.default.findOne({ 'email': email });
-            console.log('user found');
             if (user == null) {
                 console.log('invalid user');
             }
+            console.log('user found');
             const result = yield user_model_1.default.updateOne({ email: email }, { $set: { ImgUrl: ImgUrl } });
             console.log(`Updated ${result.modifiedCount} user(s).`);
             res.status(200).send(ImgUrl);
+        }
+        catch (error) {
+            console.log("file put method err:", error);
+            res.status(400);
+        }
+    });
+});
+const student_model_1 = __importDefault(require("../models/student_model"));
+router.put(`/file/id/:id`, upload.single("file"), function (req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const avatarUrl = req.body.avatarUrl;
+        console.log("update file");
+        try {
+            const objectId = (0, helpers_1.idToObjectId)(req.params.id);
+            let student = yield student_model_1.default.findOne({ _id: objectId });
+            // console.log("student = ",student)
+            if (student == null) {
+                console.log('invalid id');
+            }
+            else {
+                console.log('student found');
+            }
+            const result = yield student_model_1.default.updateOne({ _id: objectId }, { $set: { avatarUrl: avatarUrl } });
+            console.log(`Updated ${result.modifiedCount} students(s).`);
+            student = yield student_model_1.default.findOne({ _id: objectId });
+            res.status(200).send({ "avatarUrl": student.avatarUrl });
         }
         catch (error) {
             console.log("file put method err:", error);

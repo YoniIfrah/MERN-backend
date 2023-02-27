@@ -7,7 +7,8 @@
     "test": "tsc && jest --detectOpenHandles --forceExit --runInBand ./dist/src/tests",
     "start": "tsc && node dist/src/app.js",
     "lint": "eslint . --ext .ts",
-    "devstart": "nodemon ./src/app.ts"
+    "devstart": "nodemon ./src/app.ts",
+    "coverage": "tsc && jest --collect-coverage --detectOpenHandles --forceExit --runInBand ./dist/src/tests "    
   },
   "author": "Yoni Ifrah",
   "license": "ISC",

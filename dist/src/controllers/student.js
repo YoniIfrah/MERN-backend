@@ -13,23 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 const mongodb_1 = require("mongodb");
 const student_model_1 = __importDefault(require("../models/student_model"));
-/**
- * takes id and convert it to Object ID for mongo fb
- * @param id string
- * @returns
- */
-const idToObjectId = (id) => {
-    let objectId = null;
-    try {
-        objectId = new mongodb_1.ObjectId(id);
-        console.log(objectId);
-    }
-    catch (err) {
-        console.error('Invalid ObjectID:', err.message);
-    }
-    return objectId;
-};
-//====================================================
+const helpers_1 = require("../services/helpers");
 const getAllStudents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('getAllStudents');
     try {
@@ -93,7 +77,7 @@ const getStudentsByEmail = (req, res) => __awaiter(void 0, void 0, void 0, funct
 const deleteById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('deleteById()');
     console.log(req.params.id);
-    const objectId = idToObjectId(req.params.id);
+    const objectId = (0, helpers_1.idToObjectId)(req.params.id);
     try {
         const del = yield student_model_1.default.findByIdAndDelete({ _id: objectId });
         res.status(200).send(del);
@@ -106,15 +90,23 @@ const putById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('deleteById()');
     console.log(req.params.id);
     const text = req.body.text;
-    const objectId = idToObjectId(req.params.id);
+    console.log(text);
+    const objectId = (0, helpers_1.idToObjectId)(req.params.id);
     try {
+        // const student = await Student.findOne({ _id: objectId })
+        // console.log('user student/post')
+        // if(student == null){
+        //     console.log('invalid user')
+        // }
+        const result = yield student_model_1.default.updateOne({ _id: objectId }, { $set: { name: text } });
+        console.log(`Updated ${result.modifiedCount} student(s).`);
         const student = yield student_model_1.default.findOne({ _id: objectId });
-        console.log('user student/post');
         if (student == null) {
             console.log('invalid user');
         }
-        const result = yield student_model_1.default.updateOne({ _id: objectId }, { $set: { name: text } });
-        console.log(`Updated ${result.modifiedCount} student(s).`);
+        else {
+            console.log("student = ", student);
+        }
         res.status(200).send(student);
     }
     catch (err) {

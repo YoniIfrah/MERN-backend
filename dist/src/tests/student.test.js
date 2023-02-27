@@ -16,6 +16,7 @@ const supertest_1 = __importDefault(require("supertest"));
 const server_1 = __importDefault(require("../server"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const student_model_1 = __importDefault(require("../models/student_model"));
+const unitTestVar_1 = require("../services/unitTestVar");
 let newStudenId = "";
 const email = "oren@gmail.com";
 beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
@@ -36,6 +37,7 @@ describe("Student Tests", () => {
         });
         expect(response.statusCode).toEqual(200);
         newStudenId = response.body._id;
+        unitTestVar_1.StudentId.setStudenId(newStudenId);
     }));
     test("get all students", () => __awaiter(void 0, void 0, void 0, function* () {
         const response = yield (0, supertest_1.default)(server_1.default).get('/student');

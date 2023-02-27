@@ -2,6 +2,8 @@ import request from 'supertest'
 import app from '../server'
 import mongoose from 'mongoose'
 import Student from '../models/student_model'
+import {StudentId} from '../services/unitTestVar'
+
 
 let newStudenId = ""
 const email = "oren@gmail.com"
@@ -25,6 +27,7 @@ describe("Student Tests", () => {
             })
         expect(response.statusCode).toEqual(200)
         newStudenId = response.body._id
+        StudentId.setStudenId(newStudenId)
     })
 
     test("get all students", async () => {
@@ -59,6 +62,7 @@ describe("Student Tests", () => {
         const response = await request(app).delete('/student/delete/' + newStudenId)
         expect(response.statusCode).toEqual(200)
     })
+    
     test("update student by id", async () => {
         const response = await request(app).put('/student/update/' + newStudenId).send({
             "text":"new text after put request"

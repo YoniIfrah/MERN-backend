@@ -2,23 +2,8 @@
 import {ObjectId} from 'mongodb'
 import Student from '../models/student_model'
 import { Request, Response } from 'express'
+import {idToObjectId} from '../services/helpers'
 
-/**
- * takes id and convert it to Object ID for mongo fb
- * @param id string
- * @returns 
- */
-const idToObjectId = (id:string) =>{
-    let objectId:  ObjectId | null = null;
-    try {
-      objectId = new ObjectId(id);
-      console.log(objectId)
-    } catch (err) {
-      console.error('Invalid ObjectID:', err.message);
-    }
-    return objectId
-}
-//====================================================
 const getAllStudents = async (req: Request, res: Response) => {
     console.log('getAllStudents')
 
@@ -99,20 +84,19 @@ const putById = async (req: Request, res: Response) => {
     console.log('deleteById()')
     console.log(req.params.id)
     const text = req.body.text;
+    console.log("text = ",text)
 
     const objectId:ObjectId | null = idToObjectId(req.params.id)
     try {
-        const student = await Student.findOne({ _id: objectId })
-        console.log('user student/post')
-        if(student == null){
-            console.log('invalid user')
-        }
         const result = await Student.updateOne(
             { _id: objectId },
             { $set: { name: text } }
         )
         console.log(`Updated ${result.modifiedCount} student(s).`);
-
+        const student = await Student.findOne({ _id: objectId })
+        if(student == null){
+            console.log('invalid user')
+        }
         res.status(200).send(student)
     } catch (err) {
         console.log(err.message)
