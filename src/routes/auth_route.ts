@@ -40,6 +40,19 @@ const router = express.Router();
 *       example:
 *         email: 'bob@gmail.com'
 *         password: '123456'
+*     AuthPut:
+*       type: object
+*       required:
+*         - email
+*       properties:
+*         email:
+*           type: string
+*           description: The user email
+*         password:
+*           type: string
+*           description: The user password
+*       example:
+*         password: '123456'
 */
 
 /**
@@ -149,7 +162,36 @@ router.get('/refresh',auth.refresh)
  */
 router.get('/logout',auth.logout)
 
-
+/**
+ * @swagger
+ * /auth/{email}:
+ *   put:
+ *     summary: update student by id
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: email
+ *         requiered: true
+ *         schema:
+ *           type: string
+ *           description: the requested user email
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AuthPut'
+ *     responses:
+ *       200:
+ *         description: the requested user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AuthPut'
+ *  
+ */
 router.put('/:email', auth.changePassword)
 
 
