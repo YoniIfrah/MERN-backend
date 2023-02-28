@@ -14,7 +14,7 @@ const router = express.Router()
 import multer from 'multer'
 
 // const base = 'http://192.168.0.117:3000'//home
-const base = 'http://10.200.201.233:3000'//sce
+const base = 'http://172.19.4.3:3000'//sce
 // const base = 'http://192.168.246.174:3000' //cell phone
 
 // const base = 'http://10.0.0.28:3000'//zamir

@@ -22,7 +22,7 @@ const helpers_1 = require("../services/helpers");
 const router = express_1.default.Router();
 const multer_1 = __importDefault(require("multer"));
 // const base = 'http://192.168.0.117:3000'//home
-const base = 'http://10.200.201.233:3000'; //sce
+const base = 'http://172.19.4.3:3000'; //sce
 // const base = 'http://192.168.246.174:3000' //cell phone
 // const base = 'http://10.0.0.28:3000'//zamir
 const storage = multer_1.default.diskStorage({
@@ -66,7 +66,7 @@ router.put(`/file/:email`, upload.single("file"), function (req, res) {
 const student_model_1 = __importDefault(require("../models/student_model"));
 router.put(`/file/id/:id`, upload.single("file"), function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const avatarUrl = req.body.avatarUrl;
+        const avatarUrl = req.body.ImgUrl;
         console.log("updating file to ", req.params.id);
         try {
             const objectId = (0, helpers_1.idToObjectId)(req.params.id);

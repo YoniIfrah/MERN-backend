@@ -35,6 +35,8 @@ db.once('open', () => console.log('connected to mongo'));
 //static pages
 app.use('/public', express_1.default.static('public'));
 app.use('/uploads', express_1.default.static('uploads'));
+const cors_1 = __importDefault(require("cors"));
+app.use((0, cors_1.default)());
 const post_route_1 = __importDefault(require("./routes/post_route"));
 app.use('/post', post_route_1.default);
 const auth_route_1 = __importDefault(require("./routes/auth_route"));

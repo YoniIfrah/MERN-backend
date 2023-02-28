@@ -36,7 +36,8 @@ db.once('open', () => console.log('connected to mongo'))
 app.use('/public',express.static('public'))
 app.use('/uploads',express.static('uploads'))
 
-
+import cors from 'cors';
+app.use(cors());
 
 import postRouter from './routes/post_route'
 app.use('/post',postRouter);
