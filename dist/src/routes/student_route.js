@@ -101,6 +101,30 @@ router.get('/:id', student_1.default.getStudentById);
  *
  */
 router.post('/', student_1.default.addNewStudent);
+/**
+ * @swagger
+ * /student/email/{email}:
+ *   get:
+ *     summary: get student by email
+ *     tags: [Student]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         requiered: true
+ *         schema:
+ *           type: string
+ *           description: the requested post id
+ *     responses:
+ *       200:
+ *         description: the requested post
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Post'
+ *
+ */
 router.get('/email/:email', student_1.default.getStudentsByEmail);
 router.delete('/delete/:id', student_1.default.deleteById);
 router.put('/update/:id', student_1.default.putById);

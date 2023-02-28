@@ -17,6 +17,7 @@ const router = express.Router()
 *       type: object
 *       required:
 *         - id
+*         - email
 *         - name
 *         - avatarUrl
 *       properties:
@@ -31,8 +32,29 @@ const router = express.Router()
 *           description: The student avatar url
 *       example:
 *         id: '123'
+*         email: "oren@gmail.com"
 *         name: 'Oren'
 *         avatarUrl: 'www.mysute/oren.jpg'
+*     StudentPut:
+*       type: object
+*       required:
+*         - text
+*       properties:
+*         text:
+*           type: string
+*           description: The student name
+*       example:
+*         image: 'NEW'
+*     StudentPut2:
+*       type: object
+*       required:
+*         - image
+*       properties:
+*         image:
+*           type: string
+*           description: The student photo
+*       example:
+*         image: 'NEW2'
 */
 
 /**
@@ -75,7 +97,7 @@ router.get('/', student.getAllStudents)
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Post'
+ *               $ref: '#/components/schemas/Student'
  *  
  */
 router.get('/:id', student.getStudentById)
@@ -103,12 +125,121 @@ router.get('/:id', student.getStudentById)
  */
 router.post('/', student.addNewStudent)
 
+/**
+ * @swagger
+ * /student/email/{email}:
+ *   get:
+ *     summary: get student by email
+ *     tags: [Student]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: email
+ *         requiered: true
+ *         schema:
+ *           type: string
+ *           description: the requested post id
+ *     responses:
+ *       200:
+ *         description: the return body 
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Student'
+ *  
+ */
 router.get('/email/:email', student.getStudentsByEmail)
 
+/**
+ * @swagger
+ * /student/delete/{id}:
+ *   delete:
+ *     summary: delete student by id
+ *     tags: [Student]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         requiered: true
+ *         schema:
+ *           type: string
+ *           description: the requested post id
+ *     responses:
+ *       200:
+ *         description: the return body 
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Student'
+ *  
+ */
 router.delete('/delete/:id', student.deleteById)
 
+
+/**
+ * @swagger
+ * /student/update/{id}:
+ *   put:
+ *     summary: update student by id
+ *     tags: [Student]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         requiered: true
+ *         schema:
+ *           type: string
+ *           description: the requested post id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/StudentPut'
+ *     responses:
+ *       200:
+ *         description: the requested student
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/StudentPut'
+ *  
+ */
 router.put('/update/:id', student.putById)
 
+/**
+ * @swagger
+ * /student/updatedImg/{id}:
+ *   put:
+ *     summary: update student by id
+ *     tags: [Student]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         requiered: true
+ *         schema:
+ *           type: string
+ *           description: the requested post id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/StudentPut2'
+ *     responses:
+ *       200:
+ *         description: the requested student
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/StudentPut2'
+ *  
+ */
 router.put("/updatedImg/:id", student.updatedImg)
 
 
